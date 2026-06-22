@@ -3,58 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>กำลังพาท่านเข้าสู่ระบบดวงชะตา...</title>
+    <title>Login Horoscope</title>
     <style>
-        body { 
-            background-color: #0d0a16; 
-            color: #f4ca64; 
-            font-family: sans-serif; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            margin: 0; 
-            text-align: center;
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden; /* ป้องกันแถบเลื่อน (Scrollbar) ที่ไม่จำเป็น */
         }
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid rgba(244,202,100, 0.2);
-            border-top-color: #f4ca64;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
+        iframe {
+            width: 100%;
+            height: 100vh;
+            border: none;
         }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
-    <div>
-        <div class="spinner"></div>
-        <h2 style="margin: 0 0 10px;">✨ กำลังเปิดประตูดวงชะตา...</h2>
-        <p style="color: #bbaed8; margin: 0;">กรุณารอสักครู่ ระบบกำลังพาท่านไปยังหน้าหลัก</p>
-    </div>
-
-    <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            // 1. ลิงก์ปลายทางของระบบดวงชะตา (Google Apps Script)
-            let baseUrl = "https://script.google.com/macros/s/AKfycby6ZxavqvlTF9Bl2nv6DBx_c67V186qPfQuzYUp79e5c3293Gfsc6EuOr5sm7x4NZed0w/exec";
-            
-            // 2. ควานหา KEY จาก URL หลักที่ลูกค้ากดเข้ามา
-            const currentUrl = window.location.href;
-            const match = currentUrl.match(/(HORO-[A-Z0-9]+)/i);
-            
-            if (match && match[1]) {
-                const keyCode = match[1].toUpperCase();
-                baseUrl += "?key=" + keyCode;
-            }
-            
-            // 3. เด้งทะลุกรอบ พาลูกค้าไปยังเว็บ Google Apps Script โดยตรง
-            // ใช้ replace() เพื่อไม่ให้ลูกค้ากดย้อนกลับ (Back) มาเจอหน้าโหลดนี้อีก
-            setTimeout(() => {
-                window.location.replace(baseUrl);
-            }, 800); // หน่วงเวลา 0.8 วินาทีให้เห็น Animation โหลดสวยๆ ก่อนเด้งไปหน้าจริง
-        });
-    </script>
+    <iframe src="https://script.google.com/macros/s/AKfycby6ZxavqvlTF9Bl2nv6DBx_c67V186qPfQuzYUp79e5c3293Gfsc6EuOr5sm7x4NZed0w/exec"></iframe>
 </body>
 </html>
