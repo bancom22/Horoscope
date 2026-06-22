@@ -19,6 +19,34 @@
     </style>
 </head>
 <body>
-    <iframe src="https://script.google.com/macros/s/AKfycby6ZxavqvlTF9Bl2nv6DBx_c67V186qPfQuzYUp79e5c3293Gfsc6EuOr5sm7x4NZed0w/exec"></iframe>
+    <iframe id="gasIframe" src="https://script.google.com/macros/s/AKfycby6ZxavqvlTF9Bl2nv6DBx_c67V186qPfQuzYUp79e5c3293Gfsc6EuOr5sm7x4NZed0w/exec"></iframe>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            // ดึงข้อความ URL ทั้งหมดจากเบราว์เซอร์หลัก (GitHub Pages)
+            const currentUrl = window.location.href;
+            
+            // ใช้ Regular Expression ดักจับรหัสที่ขึ้นต้นด้วย HORO- 
+            // วิธีนี้ทะลุทะลวงได้แม้จะติด ?openExternalBrowser=1 ก็ตาม
+            const match = currentUrl.match(/(HORO-[A-Z0-9]+)/i);
+            
+            // หากพบรหัส Key ให้ทำการอัปเดตลิงก์ของ Iframe ใหม่
+            if (match && match[1]) {
+                const keyCode = match[1].toUpperCase();
+                const iframe = document.getElementById('gasIframe');
+                
+                if (iframe) {
+                    let baseUrl = iframe.src;
+                    
+                    // เชื่อมต่อ Parameter ให้ถูกต้อง ป้องกันลิงก์พัง
+                    if (baseUrl.includes('?')) {
+                        iframe.src = baseUrl + '&key=' + keyCode;
+                    } else {
+                        iframe.src = baseUrl + '?key=' + keyCode;
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>
