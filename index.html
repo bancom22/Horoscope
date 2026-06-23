@@ -501,6 +501,15 @@
     const getEl = (id) => document.getElementById(id);
     
     window.addEventListener('DOMContentLoaded', () => {
+      // ============================================================================
+      // [เพิ่มใหม่]: อ่านพารามิเตอร์ key จาก URL แล้วนำมากรอกในช่องให้อัตโนมัติ
+      // ============================================================================
+      const urlParams = new URLSearchParams(window.location.search);
+      const autoKey = urlParams.get('key');
+      if (autoKey && getEl('keyInput')) {
+          getEl('keyInput').value = autoKey.toUpperCase();
+      }
+
       const hSel = getEl('birthHour'), mSel = getEl('birthMinute');
       if (hSel && mSel) {
         for(let i=0; i<24; i++) hSel.innerHTML += `<option value="${String(i).padStart(2,'0')}">${String(i).padStart(2,'0')}</option>`;
