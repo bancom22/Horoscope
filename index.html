@@ -432,43 +432,69 @@
   </div>
 
   <script>
-    // ============================================================================
-    // เพิ่มใหม่: Proxy จำลองคำสั่ง google.script.run ให้ทำงานข้ามโดเมนได้ (สำหรับ GitHub Pages)
+   // ============================================================================
+    // แก้ไขใหม่ล่าสุด: Proxy จำลองคำสั่ง google.script.run แบบแยก Instance (ป้องกัน Callback ตีกัน)
     // ============================================================================
     const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycby6ZxavqvlTF9Bl2nv6DBx_c67V186qPfQuzYUp79e5c3293Gfsc6EuOr5sm7x4NZed0w/exec";
 
     const google = {
       script: {
-        run: new Proxy({
-          withSuccessHandler: function(callback) { this._onSuccess = callback; return this; },
-          withFailureHandler: function(callback) { this._onFailure = callback; return this; },
-          _callApi: async function(action, ...args) {
+        get run() {
+          // สร้างหน่วยความจำใหม่ทุกครั้งที่มีการกดปุ่ม (แยกสายการทำงานชัดเจน)
+          return createRunner({});
+        }
+      }
+    };
+
+    function createRunner(handlers) {
+      return new Proxy({}, {
+        get: function(target, prop) {
+          if (prop === 'withSuccessHandler') {
+            return function(callback) {
+              handlers.success = callback;
+              return createRunner(handlers); // คืนค่า runner ตัวเดิมที่จำเฉพาะ callback ของตัวเอง
+            };
+          }
+          if (prop === 'withFailureHandler') {
+            return function(callback) {
+              handlers.failure = callback;
+              return createRunner(handlers);
+            };
+          }
+          // เมื่อเรียกใช้งานฟังก์ชันหลังบ้าน (เช่น generateHoroscope, syncUserTimer)
+          return async function(...args) {
             try {
-              // ใช้ fetch ยิงข้อมูลไปหา GAS (ใช้ text/plain เพื่อหลบระบบป้องกัน CORS Preflight ของ Google)
               const res = await fetch(GAS_WEB_APP_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({ action: action, args: args })
+                body: JSON.stringify({ action: prop, args: args })
               });
-              const json = await res.json();
+              
+              const text = await res.text();
+              let json;
+              try {
+                json = JSON.parse(text);
+              } catch (e) {
+                console.error("Server Error Response:", text);
+                if (handlers.failure) handlers.failure("เซิร์ฟเวอร์ตอบกลับผิดพลาด (อาจเกิดจากการโหลดหนัก หรือ Google ล่ม)");
+                return;
+              }
+
               if (json.ok) {
-                if (this._onSuccess) this._onSuccess(json.data);
+                if (handlers.success) handlers.success(json.data);
               } else {
-                if (this._onFailure) this._onFailure(json.error);
+                if (handlers.failure) handlers.failure(json.error);
               }
             } catch (err) {
-              if (this._onFailure) this._onFailure("เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์");
+              console.error("Fetch Error:", err);
+              // ดักจับกรณีเน็ตมือถือหลุด หรือ API หมดเวลา
+              if (handlers.failure) handlers.failure("การเชื่อมต่อขาดหาย (ตรวจสอบอินเทอร์เน็ต หรือเซิร์ฟเวอร์ตอบสนองช้าเกินไป)");
             }
-          }
-        }, {
-          // ดักจับชื่อฟังก์ชันทั้งหมด แล้วโยนเข้า _callApi
-          get: function(target, prop) {
-            if (prop in target) return target[prop];
-            return function(...args) { return target._callApi(prop, ...args); };
-          }
-        })
-      }
-    };
+          };
+        }
+      });
+    }
+    
     const uniqueClientId = 'SSID-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
     let appState = { loggedIn: false, keyCode: '', reading: null, chat: [], keyInfo: null, seamsiUsed: false, tarotUsed: false };
     let lastPayloadStr = ""; let countdownInterval = null; let autoSaveInterval = null; 
