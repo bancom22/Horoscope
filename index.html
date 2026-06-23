@@ -432,11 +432,10 @@
   </div>
 
   <script>
-     
     // ============================================================================
     // เพิ่มใหม่: Proxy จำลองคำสั่ง google.script.run ให้ทำงานข้ามโดเมนได้ (สำหรับ GitHub Pages)
     // ============================================================================
-    const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycby6ZxavqvlTF9Bl2nv6DBx_c67V186qPfQuzYUp79e5c3293Gfsc6EuOr5sm7x4NZed0w/exec";
+    const GAS_WEB_APP_URL = "นำ_URL_WEB_APP_ของคณที่ลงท้ายด้วย_/exec_มาใส่ตรงนี้ครับ";
 
     const google = {
       script: {
@@ -470,9 +469,7 @@
         })
       }
     };
-    
     // โค้ดเดิมของคุณทั้งหมดจะอยู่ต่อจากบรรทัดนี้...
-      
     const uniqueClientId = 'SSID-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
     let appState = { loggedIn: false, keyCode: '', reading: null, chat: [], keyInfo: null, seamsiUsed: false, tarotUsed: false };
     let lastPayloadStr = ""; let countdownInterval = null; let autoSaveInterval = null; 
@@ -501,15 +498,6 @@
     const getEl = (id) => document.getElementById(id);
     
     window.addEventListener('DOMContentLoaded', () => {
-      // ============================================================================
-      // [เพิ่มใหม่]: อ่านพารามิเตอร์ key จาก URL แล้วนำมากรอกในช่องให้อัตโนมัติ
-      // ============================================================================
-      const urlParams = new URLSearchParams(window.location.search);
-      const autoKey = urlParams.get('key');
-      if (autoKey && getEl('keyInput')) {
-          getEl('keyInput').value = autoKey.replace(/[^a-zA-Z0-9-]/g, '').toUpperCase();
-      }
-
       const hSel = getEl('birthHour'), mSel = getEl('birthMinute');
       if (hSel && mSel) {
         for(let i=0; i<24; i++) hSel.innerHTML += `<option value="${String(i).padStart(2,'0')}">${String(i).padStart(2,'0')}</option>`;
@@ -1188,11 +1176,10 @@
     }
 
     getEl('loginBtn').onclick = () => { 
-      // [แก้ไข]: ล้างขยะก่อนส่งข้อมูลไปเช็คที่หลังบ้าน
-      const keyCode = getEl('keyInput').value.replace(/[^a-zA-Z0-9-]/g, '').toUpperCase(); 
+      const keyCode = getEl('keyInput').value.trim().toUpperCase(); 
       if(!keyCode) return toast('กรุณากรอก Access Key', true); 
       showLoading('กำลังตรวจสอบ Access Key และตรวจสอบสิทธิ์เครื่อง...'); 
-      google.script.run.withSuccessHandler((res)=>{
+      google.script.run.withSuccessHandler((res)=>{ 
         hideLoading(); 
         if(res && res.ok){ 
           appState.loggedIn = true; appState.keyCode = keyCode; appState.keyInfo = res.keyInfo; 
