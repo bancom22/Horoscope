@@ -507,7 +507,7 @@
       const urlParams = new URLSearchParams(window.location.search);
       const autoKey = urlParams.get('key');
       if (autoKey && getEl('keyInput')) {
-          getEl('keyInput').value = autoKey.toUpperCase();
+          getEl('keyInput').value = autoKey.replace(/[^a-zA-Z0-9-]/g, '').toUpperCase();
       }
 
       const hSel = getEl('birthHour'), mSel = getEl('birthMinute');
@@ -1188,10 +1188,11 @@
     }
 
     getEl('loginBtn').onclick = () => { 
-      const keyCode = getEl('keyInput').value.trim().toUpperCase(); 
+      // [แก้ไข]: ล้างขยะก่อนส่งข้อมูลไปเช็คที่หลังบ้าน
+      const keyCode = getEl('keyInput').value.replace(/[^a-zA-Z0-9-]/g, '').toUpperCase(); 
       if(!keyCode) return toast('กรุณากรอก Access Key', true); 
       showLoading('กำลังตรวจสอบ Access Key และตรวจสอบสิทธิ์เครื่อง...'); 
-      google.script.run.withSuccessHandler((res)=>{ 
+      google.script.run.withSuccessHandler((res)=>{
         hideLoading(); 
         if(res && res.ok){ 
           appState.loggedIn = true; appState.keyCode = keyCode; appState.keyInfo = res.keyInfo; 
