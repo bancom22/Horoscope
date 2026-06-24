@@ -1624,7 +1624,6 @@
            toast('วิเคราะห์โหงวเฮ้งสำเร็จ!');
            appState.faceScanUsed = true;
            
-           // อัปเดตข้อมูลและซ่อนกล่องสแกน
            appState.reading.faceScanResult = res;
            getEl('faceScanningBox').classList.add('hide');
            renderReading(appState.reading); 
@@ -1633,7 +1632,15 @@
            clearInterval(simInterval);
            getEl('faceScanningBox').classList.add('hide');
            getEl('cameraSetupBox').classList.remove('hide'); // ถอยกลับไปหน้าปุ่มเริ่ม
-           toast('เกิดข้อผิดพลาด: ' + (err.message || err), true);
+           
+           // [แก้ไข]: สกัดคำว่า Error/Exception ของ Google ออก และบังคับให้ Modal เด้งโชว์ตรงกลางหน้าจอ
+           let errMsg = err.message || err;
+           errMsg = errMsg.replace(/^Error:\s*/i, '').replace(/^Exception:\s*/i, '');
+           
+           getEl('alertTitle').innerHTML = '⚠️ แจ้งเตือนการสแกนใบหน้า';
+           getEl('alertBody').innerHTML = errMsg;
+           getEl('alertModal').classList.add('show');
+           
        }).processFaceScan({
            keyCode: appState.keyCode,
            customerName: appState.reading.customerName || 'Customer',
