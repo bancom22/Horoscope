@@ -249,9 +249,17 @@
         <label>ทะเบียนรถ (ไม่บังคับ)</label><input id="vehiclePlate" placeholder="1กข 1234">
         <label>อีเมล (E-Mail) (ไม่บังคับ)</label>
         <input id="userEmailForm" type="email" placeholder="กรอกเพื่อรับสำเนาผลคำทำนายทางอีเมลอัตโนมัติ">
-        <button class="btn" id="generateBtn" style="margin-top:16px; width:100%">✨ รับคำทำนาย</button>
+        <!-- [แก้ไข]: ย้ายปุ่มรับคำทำนาย (generateBtn) ออกจากจุดนี้ ไปไว้ที่การ์ดคำแนะนำด้านล่างแทน -->
       </div>
-      <div class="card section"><h2 class="h2">คำแนะนำก่อนทำนาย</h2><div class="muted" style="line-height: 1.6;">กรุณาตั้งสมาธิ และกรอกข้อมูลของท่านให้ถูกต้องที่สุด เพื่อให้โหราจารย์คำนวณพื้นดวงและดาวจรได้อย่างแม่นยำตามหลักตำราพรหมชาติ หากระบุเวลาเกิดระบบจะคำนวณข้างขึ้นข้างแรมและลัคนาให้แม่นยำที่สุด</div></div>
+
+      <div class="card section">
+        <h2 class="h2">คำแนะนำก่อนทำนาย</h2>
+        <div class="muted" style="line-height: 1.6;">กรุณาตั้งสมาธิ และกรอกข้อมูลของท่านให้ถูกต้องที่สุด เพื่อให้โหราจารย์คำนวณพื้นดวงและดาวจรได้อย่างแม่นยำตามหลักตำราพรหมชาติ หากระบุเวลาเกิดระบบจะคำนวณข้างขึ้นข้างแรมและลัคนาให้แม่นยำที่สุด</div>
+        
+        <!-- [เพิ่ม/ย้ายมาใหม่]: นำปุ่มรับคำทำนายมาวางไว้ล่างสุดของกล่องคำแนะนำ 
+             และปรับสไตล์ (padding, font-size, box-shadow) ให้ปุ่มดูโดดเด่นน่ากดมากยิ่งขึ้น -->
+        <button class="btn" id="generateBtn" style="margin-top:32px; width:100%; padding: 16px; font-size: 1.15rem; box-shadow: 0 8px 25px rgba(244,202,100,0.35);">✨ รับคำทำนาย</button>
+      </div>
     </div>
 
     <div id="sessionInfo" class="hide info-bar" style="align-items: center; justify-content: space-between;">
