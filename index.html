@@ -231,12 +231,23 @@
     <div id="userView" class="hide grid two">
       <div class="card section">
         <h2 class="h2">ข้อมูลเจ้าชะตา</h2>
-        <label>ชื่อ-นามสกุล</label><input id="nameInput" placeholder="กรอกชื่อของคุณ">
+        <label>ชื่อ-นามสกุล</label>
+        <input id="nameInput" placeholder="กรอกชื่อของคุณ">
+        
         <div class="row">
-          <div><label>วันที่เกิด</label><input id="birthDay" type="number" placeholder="1" min="1" max="31"></div>
-          <div><label>เดือนเกิด</label><input id="birthMonth" type="number" placeholder="1" min="1" max="12"></div>
+          <div>
+            <label>วันที่เกิด</label>
+            <input id="birthDay" type="number" placeholder="1" min="1" max="31" oninput="if(this.value.length > 2) this.value = this.value.slice(0,2);">
+          </div>
+          <div>
+            <label>เดือนเกิด</label>
+            <input id="birthMonth" type="number" placeholder="1" min="1" max="12" oninput="if(this.value.length > 2) this.value = this.value.slice(0,2);">
+          </div>
         </div>
-        <label>ปีเกิด (พ.ศ.)</label><input id="birthYear" type="number" placeholder="2535">
+        
+        <label>ปีเกิด (พ.ศ.)</label>
+        <input id="birthYear" type="number" placeholder="2535" oninput="if(this.value.length > 4) this.value = this.value.slice(0,4);">
+        
         <label>เวลาเกิด (แบบ 24 ชั่วโมง เช่น 15:30)</label>
         <div style="display: flex; gap: 10px; align-items: center;">
           <select id="birthHour" style="flex: 1;"><option value="">-- ชั่วโมง --</option></select>
@@ -244,20 +255,19 @@
           <select id="birthMinute" style="flex: 1;"><option value="">-- นาที --</option></select>
         </div>
         
-        <label>เบอร์โทรศัพท์ (ไม่บังคับ)</label><input id="phoneNumber" type="tel" inputmode="numeric" placeholder="0812345678">
+        <label>เบอร์โทรศัพท์ (ไม่บังคับ)</label>
+        <input id="phoneNumber" type="tel" inputmode="numeric" placeholder="0812345678" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 10) this.value = this.value.slice(0,10);">
         
-        <label>ทะเบียนรถ (ไม่บังคับ)</label><input id="vehiclePlate" placeholder="1กข 1234">
+        <label>ทะเบียนรถ (ไม่บังคับ)</label>
+        <input id="vehiclePlate" placeholder="1กข 1234">
+        
         <label>อีเมล (E-Mail) (ไม่บังคับ)</label>
         <input id="userEmailForm" type="email" placeholder="กรอกเพื่อรับสำเนาผลคำทำนายทางอีเมลอัตโนมัติ">
-        <!-- [แก้ไข]: ย้ายปุ่มรับคำทำนาย (generateBtn) ออกจากจุดนี้ ไปไว้ที่การ์ดคำแนะนำด้านล่างแทน -->
       </div>
 
       <div class="card section">
         <h2 class="h2">คำแนะนำก่อนทำนาย</h2>
         <div class="muted" style="line-height: 1.6;">กรุณาตั้งสมาธิ และกรอกข้อมูลของท่านให้ถูกต้องที่สุด เพื่อให้โหราจารย์คำนวณพื้นดวงและดาวจรได้อย่างแม่นยำตามหลักตำราพรหมชาติ หากระบุเวลาเกิดระบบจะคำนวณข้างขึ้นข้างแรมและลัคนาให้แม่นยำที่สุด</div>
-        
-        <!-- [เพิ่ม/ย้ายมาใหม่]: นำปุ่มรับคำทำนายมาวางไว้ล่างสุดของกล่องคำแนะนำ 
-             และปรับสไตล์ (padding, font-size, box-shadow) ให้ปุ่มดูโดดเด่นน่ากดมากยิ่งขึ้น -->
         <button class="btn" id="generateBtn" style="margin-top:32px; width:100%; padding: 16px; font-size: 1.15rem; box-shadow: 0 8px 25px rgba(244,202,100,0.35);">✨ รับคำทำนาย</button>
       </div>
     </div>
@@ -1248,18 +1258,67 @@
     };
 
     getEl('generateBtn').onclick = () => { 
-      const name = getEl('nameInput').value.trim(); const birthDay = getEl('birthDay').value.trim(); const birthMonth = getEl('birthMonth').value.trim(); const birthYear = getEl('birthYear').value.trim(); 
+      const name = getEl('nameInput').value.trim(); 
+      const birthDay = getEl('birthDay').value.trim(); 
+      const birthMonth = getEl('birthMonth').value.trim(); 
+      const birthYear = getEl('birthYear').value.trim(); 
       const h = getEl('birthHour').value; const m = getEl('birthMinute').value;
       const birthTime = (h && m) ? `${h}:${m}` : '';
+      const phone = getEl('phoneNumber').value.trim();
       const emailForm = getEl('userEmailForm').value.trim(); 
 
-      if (!name) return toast('กรุณาระบุ "ชื่อ" ของคุณ', true); if (!birthDay) return toast('วันเกิดไม่ถูกต้อง', true); if (!birthMonth) return toast('เดือนเกิดไม่ถูกต้อง', true); if (!birthYear) return toast('ปีเกิดไม่ถูกต้อง', true);
-      if (emailForm && !emailForm.includes('@')) return toast('รูปแบบอีเมลไม่ถูกต้อง', true);
+      // =======================================================
+      // [แก้ไข]: เพิ่มระบบ Data Validation ตรวจสอบความถูกต้องของข้อมูล
+      // =======================================================
+      
+      // 1. ตรวจสอบชื่อ
+      if (!name) return toast('กรุณาระบุ "ชื่อ-นามสกุล" ของคุณ', true); 
+      
+      // 2. ตรวจสอบวัน/เดือน/ปีเกิด อย่างละเอียด
+      const dNum = Number(birthDay);
+      if (!birthDay || isNaN(dNum) || dNum < 1 || dNum > 31) {
+          return toast('กรุณาระบุวันที่เกิดให้ถูกต้อง (1-31)', true); 
+      }
+      
+      const mNum = Number(birthMonth);
+      if (!birthMonth || isNaN(mNum) || mNum < 1 || mNum > 12) {
+          return toast('กรุณาระบุเดือนเกิดให้ถูกต้อง (1-12)', true); 
+      }
+      
+      const yNum = Number(birthYear);
+      if (!birthYear || birthYear.length !== 4 || isNaN(yNum)) {
+          return toast('กรุณาระบุปีเกิด (พ.ศ.) ให้ครบ 4 หลัก เช่น 2535', true);
+      }
+
+      // 3. ตรวจสอบเบอร์โทร (ถ้ากรอกมา ต้องครบ 10 หลัก และขึ้นต้นด้วยเลข 0)
+      if (phone !== '') {
+          if (phone.length !== 10 || !phone.startsWith('0')) {
+              return toast('เบอร์โทรศัพท์ต้องมี 10 หลักและขึ้นต้นด้วย 0', true);
+          }
+      }
+
+      // 4. ตรวจสอบรูปแบบอีเมล (ถ้ากรอกมา ต้องเช็ค Regex ความถูกต้อง)
+      if (emailForm !== '') {
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(emailForm)) {
+              return toast('รูปแบบอีเมลไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง', true);
+          }
+      }
 
       // แอบจำอีเมลลูกค้าไว้ในระบบชั่วคราว เพื่อเตรียมส่งตอนจบ
       appState.customerEmail = emailForm;
 
-      const payload = { keyCode: appState.keyCode, name: name, birthDay: birthDay, birthMonth: birthMonth, birthYear: birthYear, birthTime: birthTime, phoneNumber: getEl('phoneNumber').value.trim(), vehiclePlate: getEl('vehiclePlate').value.trim(), email: emailForm }; 
+      const payload = { 
+          keyCode: appState.keyCode, 
+          name: name, 
+          birthDay: birthDay, 
+          birthMonth: birthMonth, 
+          birthYear: birthYear, 
+          birthTime: birthTime, 
+          phoneNumber: phone, 
+          vehiclePlate: getEl('vehiclePlate').value.trim(), 
+          email: emailForm 
+      }; 
       
       let currentPayloadStr = JSON.stringify({name: name, birthDay: birthDay, birthMonth: birthMonth, birthYear: birthYear, birthTime: birthTime});
       if(appState.reading && currentPayloadStr === lastPayloadStr) { show('resultView'); return; }
@@ -1269,7 +1328,6 @@
           lastPayloadStr = currentPayloadStr; 
           if(res && res.keyInfo) appState.keyInfo = res.keyInfo; 
           renderReading(res); 
-          // (เอาคำสั่งส่งอีเมลตรงนี้ออกไปแล้ว เพื่อรอส่งตอนลูกค้ากดออกจากระบบ)
       }).withFailureHandler(err=>{ 
           hideLoading(); toast(err.message||err, true); 
       }).generateHoroscope(payload); 
