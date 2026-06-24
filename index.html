@@ -297,11 +297,25 @@
         <div style="margin-bottom: 10px; font-size: 1.05rem;">⏳ เวลาในระบบ: <strong id="timeRemainTxt" class="text-gold">คำนวณเวลา...</strong></div>
         
         <div style="display: flex; flex-wrap: wrap; gap: 8px; font-size: 0.85rem;">
-           <div style="background: rgba(255,255,255,0.05); padding: 5px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">💬 ปรึกษา: <strong id="qRemainTxt" class="text-lucky">...</strong></div>
-           <div style="background: rgba(255,255,255,0.05); padding: 5px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);" id="templeQuotaBadge">⛩️ หาวัด: <strong id="templeRemainTxt" class="text-lucky">2</strong></div>
-           <div style="background: rgba(255,255,255,0.05); padding: 5px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">🔮 เซียมซี: <strong id="seamsiRemainTxt" class="text-lucky">1</strong></div>
-           <div style="background: rgba(255,255,255,0.05); padding: 5px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">🃏 ไพ่ยิปซี: <strong id="tarotRemainTxt" class="text-lucky">1</strong></div>
-           <div id="faceScanQuotaBadge" class="hide" style="background: rgba(255,255,255,0.05); padding: 5px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">👤 โหงวเฮ้ง: <strong id="faceScanRemainTxt" class="text-lucky">1</strong></div>
+           <div onclick="document.getElementById('chatView').scrollIntoView({behavior: 'smooth', block: 'start'})" style="background: rgba(255,255,255,0.05); padding: 5px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
+             💬 ปรึกษา: <strong id="qRemainTxt" class="text-lucky">...</strong>
+           </div>
+           
+           <div id="templeQuotaBadge" onclick="document.getElementById('manualTempleCard').scrollIntoView({behavior: 'smooth', block: 'start'})" style="background: rgba(255,255,255,0.05); padding: 5px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
+             ⛩️ หาวัด: <strong id="templeRemainTxt" class="text-lucky">2</strong>
+           </div>
+           
+           <div onclick="document.getElementById('seamsiCard').scrollIntoView({behavior: 'smooth', block: 'start'})" style="background: rgba(255,255,255,0.05); padding: 5px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
+             🔮 เซียมซี: <strong id="seamsiRemainTxt" class="text-lucky">1</strong>
+           </div>
+           
+           <div onclick="document.getElementById('tarotCard').scrollIntoView({behavior: 'smooth', block: 'start'})" style="background: rgba(255,255,255,0.05); padding: 5px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
+             🃏 ไพ่ยิปซี: <strong id="tarotRemainTxt" class="text-lucky">1</strong>
+           </div>
+           
+           <div id="faceScanQuotaBadge" onclick="document.getElementById('faceScanCard').scrollIntoView({behavior: 'smooth', block: 'start'})" class="hide" style="background: rgba(255,255,255,0.05); padding: 5px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
+             👤 โหงวเฮ้ง: <strong id="faceScanRemainTxt" class="text-lucky">1</strong>
+           </div>
         </div>
       </div>
       <button class="btn2" id="logoutBtn" style="color: #f87171; border-color: #f87171; white-space: nowrap; margin-top: 0; align-self: flex-start;" onclick="triggerLogoutAction()">🚪 ออกจากระบบ</button>
@@ -1430,14 +1444,23 @@
 
     function trackAndRedirect(productId, url) { if (productId) google.script.run.trackProductClick(productId); window.open(url, '_blank'); }
 
+    // ============================================================================
+    // [แก้ไข]: เปิด Modal ส่งอีเมล พร้อมดึงอีเมลเดิมมากรอกให้อัตโนมัติ (Auto-Fill)
+    // ============================================================================
     // เปิด Modal จากปุ่มด้านบน (ผลคำทำนาย)
     getEl('openEmailModalBtn').onclick = () => {
+      if (appState.customerEmail) {
+          getEl('userEmailInput').value = appState.customerEmail;
+      }
       getEl('emailModal').classList.add('show');
     };
 
-    // [เพิ่มใหม่]: เปิด Modal จากปุ่มด้านล่าง (ส่วนแชท)
+    // เปิด Modal จากปุ่มด้านล่าง (ส่วนแชท)
     if (getEl('openEmailModalBtnChat')) {
       getEl('openEmailModalBtnChat').onclick = () => {
+        if (appState.customerEmail) {
+            getEl('userEmailInput').value = appState.customerEmail;
+        }
         getEl('emailModal').classList.add('show');
       };
     }
@@ -1446,6 +1469,9 @@
       const email = getEl('userEmailInput').value.trim();
       if (!email || !email.includes('@')) return toast('กรุณากรอกอีเมลให้ถูกต้อง', true);
       
+      // [เพิ่มใหม่]: แอบจำอีเมลใหม่ไว้ด้วย เผื่อลูกค้าเปลี่ยนใจพิมพ์อีเมลอื่นในช่องนี้
+      appState.customerEmail = email; 
+
       getEl('emailModal').classList.remove('show');
       showLoading('กำลังรวบรวมข้อมูลทั้งหมดและส่งอีเมล...');
       
