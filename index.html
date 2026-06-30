@@ -44,7 +44,7 @@
     .composer textarea{flex:1;min-width:70%; min-height:52px;max-height:140px;resize:vertical}
     .loading-overlay{position:fixed;inset:0;background:rgba(10,8,18,.72);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:120}.loading-overlay.show{display:flex}
     .loading-box{min-width:280px;max-width:90vw;background:rgba(18,12,32,.92);border:1px solid var(--line);border-radius:20px;padding:22px;text-align:center;box-shadow:var(--shadow)}
-
+    
     /* --- อัปเกรด: เอฟเฟกต์หมุนโหลดแบบวงแหวนโหราศาสตร์ (Cosmic Spinner) --- */
     .cosmic-spinner { position: relative; width: 75px; height: 75px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; }
     .cosmic-spinner .ring { position: absolute; border-radius: 50%; border: 3px solid transparent; }
@@ -174,8 +174,7 @@
 </head>
 <body>
   <div id="announcementBanner" class="announcement-banner hide"></div>
-  
-  <div id="toast" class="toast"></div>
+ 
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-box" style="background: rgba(18,12,32,.95); box-shadow: 0 0 40px rgba(244,202,100,0.15); border-color: rgba(244,202,100,0.3);">
       <div class="cosmic-spinner">
@@ -187,6 +186,16 @@
       <div style="color: var(--muted); font-size: 0.9rem; margin-top: 8px; font-style: italic;">ตั้งจิตอธิษฐาน อาจารย์กำลังสื่อสารกับดวงดาว</div>
     </div>
   </div>
+
+  <div class="modal-backdrop" id="alertModal">
+    <div class="modal">
+      <div class="modal-head"><h3 class="modal-title" id="alertTitle">⚠️ แจ้งเตือนจากระบบ</h3></div>
+      <div class="modal-body" id="alertBody"></div>
+      <div class="modal-actions"><button class="btn" style="width:120px;" onclick="document.getElementById('alertModal').classList.remove('show')">รับทราบ</button></div>
+    </div>
+  </div>
+  <div id="toast" class="toast"></div>
+
   <div class="modal-backdrop" id="emailModal">
     <div class="modal">
       <div class="modal-head"><h3 class="modal-title" style="color:var(--gold2);">📧 ส่งผลคำทำนายเข้าอีเมล</h3></div>
@@ -245,15 +254,15 @@
             onerror="this.style.display='none';"
           >
         </div>
-        
+
         <a 
-        id="lineContactBtn" 
-        href="https://line.me/ti/p/HctEkwu4dM" 
-        target="_blank" 
-        style="display: block; background: linear-gradient(135deg, #06C755, #05A344); color: #fff; text-decoration: none; padding: 16px; border-radius: 14px; font-weight: 800; font-size: 1.15rem; text-align: center; box-shadow: 0 6px 20px rgba(6,199,85,0.4); transition: 0.2s;"
-      >
-        เพิ่มเพื่อนผ่าน LINE
-      </a>
+            id="lineContactBtn" 
+            href="https://line.me/ti/p/HctEkwu4dM" 
+            target="_blank" 
+            style="display: block; background: linear-gradient(135deg, #06C755, #05A344); color: #fff; text-decoration: none; padding: 16px; border-radius: 14px; font-weight: 800; font-size: 1.15rem; text-align: center; box-shadow: 0 6px 20px rgba(6,199,85,0.4); transition: 0.2s;"
+          >
+            เพิ่มเพื่อนผ่าน LINE
+          </a>
       </div>
       
     </div>
@@ -343,6 +352,7 @@
             
             <button class="btn2" id="downloadPdfBtn" style="color: #60a5fa; border-color: #60a5fa;">📥 โหลดเป็น PDF</button>
             <button class="btn" id="openEmailModalBtn" style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none;">📧 ส่งผลเข้าอีเมล</button>
+            <button class="btn" id="createWallpaperBtn" style="background: linear-gradient(135deg, var(--gold), #d8a82b); color: #1b102a; border: none;">📱 รับวอลเปเปอร์หนุนดวง VIP</button>
           </div>
         </div>
         <div id="summaryBlock" style="margin-top: 16px;"></div>
@@ -460,14 +470,17 @@
            <button class="btn2" id="pdfChatBtn">🖨️ สั่งพิมพ์การสนทนา</button>
            <button class="btn2" id="downloadChatPdfBtn" style="color: #60a5fa; border-color: #60a5fa;">📥 โหลดแชทเป็น PDF</button>
            <button class="btn" id="openEmailModalBtnChat" style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none;">📧 ส่งผลเข้าอีเมล</button>
+           <button class="btn" id="createWallpaperBtnChat" style="background: linear-gradient(135deg, var(--gold), #d8a82b); color: #1b102a; border: none;">📱 รับวอลเปเปอร์หนุนดวง VIP</button>
         </div>
       </div>
 
       <div id="chatMessages" class="chat" style="max-height:400px; overflow:auto; margin-bottom:12px; padding-right: 8px;"></div>
+      
       <div id="chatStatusBar" class="chat-status">
         <div class="typing-dots"><span></span><span></span><span></span></div>
         <div id="chatStatusText" style="color: var(--gold2); font-weight: bold; font-size: 0.95rem;">อาจารย์กำลังพิจารณาดวงและพิมพ์คำตอบ...</div>
       </div>
+
       <div class="composer">
         <button class="btn2" id="voiceBtn" onclick="startVoiceRecognition()" style="padding: 12px; margin-right: 4px;" title="พูดแทนพิมพ์ (รองรับเฉพาะบางเบราว์เซอร์)">🎙️ พูด</button>
         <textarea id="chatInput" rows="2" placeholder="พิมพ์คำถาม..."></textarea>
@@ -493,8 +506,33 @@
     </div>
   </div>
 
+    <div class="modal-backdrop" id="wallpaperModal">
+    <div class="modal" style="width: min(500px, 100%);">
+      <div class="modal-head">
+        <h3 class="modal-title" style="color:var(--gold2);">📱 วอลเปเปอร์มงคลประจำดวงชะตาของคุณ</h3>
+        <button class="modal-close" onclick="document.getElementById('emailModal').classList.remove('show'); document.getElementById('wallpaperModal').classList.remove('show');" type="button">✕</button>
+      </div>
+      <div class="modal-body" style="background: #0a0410; padding: 20px; text-align: center;">
+        <p class="muted" style="font-size:0.9rem; margin-top:0; margin-bottom:15px;">✨ ระบบคำนวณสีมงคล ไพ่ยิปซี และตัวเลขนำโชคประกอบเป็นภาพเฉพาะคุณเรียบร้อยแล้วครับ</p>
+        
+        <div style="padding: 10px; background: rgba(255,255,255,0.02); border: 1px solid rgba(244,202,100,0.15); border-radius: 20px; display: inline-block;">
+          <canvas id="talismanCanvas" width="1080" height="1920" style="max-width: 290px; width: 100%; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); display: block;"></canvas>
+        </div>
+        
+        <p style="font-size:0.8rem; color:#f87171; margin-top:12px; margin-bottom:0; font-style:italic;">* สำหรับผู้ใช้ LINE/TikTok บน iOS หากกดปุ่มแล้วไม่ดาวน์โหลด ให้ใช้นิ้วแตะค้างที่รูปภาพแล้วเลือก "บันทึกไปยังแอปรูปภาพ" ได้เลยครับ</p>
+      </div>
+      <div class="modal-actions" style="background: #0a0410; padding-bottom:24px;">
+        <button class="btn2" onclick="document.getElementById('wallpaperModal').classList.remove('show')" style="padding:12px 20px;">ปิดหน้าต่าง</button>
+        <button class="btn" id="downloadWallpaperBtn" style="padding:12px 24px; box-shadow: 0 4px 15px rgba(244,202,100,0.4);">💾 บันทึกรูปภาพลงเครื่อง</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-   // ============================================================================
+      // ============================================================================
+    // เพิ่มใหม่: Proxy จำลองคำสั่ง google.script.run ให้ทำงานข้ามโดเมนได้ (สำหรับ GitHub Pages)
+    // ============================================================================
+     // ============================================================================
     // แก้ไขใหม่ล่าสุด: Proxy จำลองคำสั่ง google.script.run แบบแยก Instance (ป้องกัน Callback ตีกัน)
     // ============================================================================
     const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycby6ZxavqvlTF9Bl2nv6DBx_c67V186qPfQuzYUp79e5c3293Gfsc6EuOr5sm7x4NZed0w/exec";
@@ -556,6 +594,7 @@
         }
       });
     }
+    // โค้ดเดิมของคุณทั้งหมดจะอยู่ต่อจากบรรทัดนี้...
     
     const uniqueClientId = 'SSID-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
     let appState = { loggedIn: false, keyCode: '', reading: null, chat: [], keyInfo: null, seamsiUsed: false, tarotUsed: false };
@@ -1445,12 +1484,221 @@
           }, 1500);
       };
     }
+    // ============================================================================
+    // [เพิ่มใหม่]: ฟังก์ชันควบคุมการวาดและประกอบร่างวอลเปเปอร์สายมูเฉพาะบุคคล V2
+    // ============================================================================
+    getEl('createWallpaperBtn').onclick = () => {
+      if (!appState.reading) return toast('ไม่พบข้อมูลดวงชะตา กรุณารับคำทำนายก่อนครับ', true);
+      
+      const modal = getEl('wallpaperModal');
+      modal.classList.add('show');
+      showLoading('กำลังประกอบร่างวอลเปเปอร์มงคล...', 'กำลังผสานสีมงคลและพลังงานไพ่ยิปซี');
+      
+      try {
+         const canvas = getEl('talismanCanvas');
+         const ctx = canvas.getContext('2d');
+         const r = appState.reading;
+
+         // 1. กำหนดคู่สีมงคล (ดึงจากดวงจริง ถ้าไม่มีให้ใช้สีกาแล็กซีเริ่มต้น)
+         let color1 = '#1c2438'; 
+         let color2 = '#0a101d';
+         
+         if (r.luckyColors && r.luckyColors.length > 0) {
+            // แม็ปปิ้งชื่อสีภาษาไทยเป็นโค้ดสี CSS สวยๆ สำหรับปูพื้นหลังวอลเปเปอร์
+            const colorMap = {
+               'เขียว': '#064e3b', 'แดง': '#7f1d1d', 'เหลือง': '#78350f', 'ชมพู': '#701a75',
+               'ดำ': '#0f172a', 'ม่วง': '#4c1d95', 'ส้ม': '#7c2d12', 'น้ำเงิน': '#1e3a8a',
+               'ฟ้า': '#0c4a6e', 'ขาว': '#334155', 'ทอง': '#854d0e', 'ครีม': '#451a03'
+            };
+            const primaryThaiColor = String(r.luckyColors[0]).trim();
+            Object.keys(colorMap).forEach(key => {
+               if (primaryThaiColor.includes(key)) color1 = colorMap[key];
+            });
+         }
+
+         // วาดพื้นหลังแบบไล่แสงออร่าวงกลม (Radial Gradient)
+         const bgGrad = ctx.createRadialGradient(540, 960, 150, 540, 960, 1100);
+         bgGrad.addColorStop(0, color1);
+         bgGrad.addColorStop(0.6, color2);
+         bgGrad.addColorStop(1, '#020408'); // ขอบนอกสุดดำสนิทเพื่อความหรูหรา
+         ctx.fillStyle = bgGrad;
+         ctx.fillRect(0, 0, 1080, 1920);
+
+         // 2. วาดกลุ่มดวงดาวระยิบระยับ (Stardust Effect)
+         ctx.shadowBlur = 0;
+         for (let i = 0; i < 150; i++) {
+            ctx.beginPath();
+            ctx.arc(Math.random() * 1080, Math.random() * 1920, Math.random() * 2.5, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255, 255, 255, ${Math.random() * 0.7})`;
+            ctx.fill();
+         }
+
+         // 3. วาดวงแหวนเวทย์ศักดิ์สิทธิ์ (Sacred Geometry) ด้านหลังไพ่
+         ctx.save();
+         ctx.translate(540, 880); // เลื่อนจุดศูนย์กลางไปที่ตำแหน่งกึ่งกลางหน้าจอ
+         
+         ctx.beginPath();
+         ctx.arc(0, 0, 470, 0, Math.PI * 2);
+         ctx.strokeStyle = 'rgba(244, 202, 100, 0.12)';
+         ctx.lineWidth = 12;
+         ctx.stroke();
+
+         ctx.beginPath();
+         ctx.arc(0, 0, 420, 0, Math.PI * 2);
+         ctx.setLineDash([12, 18]);
+         ctx.strokeStyle = 'rgba(244, 202, 100, 0.35)';
+         ctx.lineWidth = 4;
+         ctx.stroke();
+
+         ctx.setLineDash([]);
+         for (let i = 0; i < 24; i++) {
+            ctx.rotate((Math.PI * 2) / 24);
+            ctx.beginPath();
+            ctx.moveTo(450, 0);
+            ctx.lineTo(475, 0);
+            ctx.strokeStyle = 'rgba(244, 202, 100, 0.4)';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+         }
+         ctx.restore();
+
+         // 4. วาดสคริปต์สีทองคำไล่เฉดสี (Gold Gradient Text) สำหรับหัวข้อ
+         const goldGrad = ctx.createLinearGradient(0, 140, 0, 240);
+         goldGrad.addColorStop(0, '#FFF9C4');
+         goldGrad.addColorStop(0.5, '#F4CA64');
+         goldGrad.addColorStop(1, '#A17f1a');
+
+         ctx.textAlign = 'center';
+         ctx.shadowColor = 'rgba(244,202,100,0.5)';
+         ctx.shadowBlur = 25;
+         ctx.fillStyle = goldGrad;
+         ctx.font = '800 85px Sarabun';
+         ctx.fillText('ดวงชะตามหาเศรษฐี', 540, 210);
+
+         ctx.shadowBlur = 0;
+         ctx.fillStyle = '#bbaed8';
+         ctx.font = '500 44px Sarabun';
+         ctx.fillText(`ลิขิตฟ้าประจำตัว : คุณ ${r.customerName || 'เจ้าชะตา'}`, 540, 290);
+
+         // 5. ดึงรูปไพ่ยิปซีมาวาด (ลอจิกใหม่: คัดไพ่ดี หรือใช้ไพ่แก้เคล็ด)
+         const img = new Image();
+         img.crossOrigin = 'Anonymous'; 
+         
+         let targetCardId = 'the_sun'; // ค่าเริ่มต้น (ไพ่แก้เคล็ดครอบจักรวาล)
+
+         if (r.tarotResult && r.tarotResult.cards && r.tarotResult.cards.length > 0) {
+            // รายชื่อไพ่ Major Arcana ความหมายบวก ที่คู่ควรกับการนำไปตั้งเป็นวอลเปเปอร์หนุนดวง
+            const goodCards = ['the_sun', 'the_world', 'the_star', 'the_empress', 'the_emperor', 'wheel_of_fortune', 'the_magician', 'the_chariot', 'strength', 'the_lovers', 'the_high_priestess'];
+
+            // สแกนหาว่าใน 3 ใบที่เปิดได้ มีไพ่ดีๆ อยู่บ้างไหม?
+            let foundGoodCard = null;
+            for (let i = 0; i < r.tarotResult.cards.length; i++) {
+                let id = String(r.tarotResult.cards[i].cardId || '').toLowerCase().replace(/\s+/g, '_').replace(/[^a-z_]/g, '');
+                if (goodCards.includes(id) && tarotImages[id]) {
+                    foundGoodCard = id;
+                    break; // เจอใบแรกที่เป็นมงคล หยิบมาใช้เลย
+                }
+            }
+
+            if (foundGoodCard) {
+                targetCardId = foundGoodCard; // ใช้ไพ่มงคลที่ลูกค้าจับได้เอง
+            } else {
+                // ถ้าดวงตก จับได้แต่ไพ่ร้าย (Death, Tower, ฯลฯ) หรือไพ่ชุดเล็กที่ไม่มีรูป
+                // ให้ระบบสุ่ม "ไพ่แก้เคล็ดสุดปัง" ไปให้แทน 1 ใน 3 ใบนี้
+                const remedialCards = ['the_sun', 'the_world', 'wheel_of_fortune'];
+                targetCardId = remedialCards[Math.floor(Math.random() * remedialCards.length)];
+            }
+         }
+         
+         // นำ ID ไพ่ที่ผ่านการคัดกรองแล้ว ไปดึงลิงก์รูปภาพมาวาด
+         img.src = 'https://upload.wikimedia.org/wikipedia/commons/' + tarotImages[targetCardId];
+         
+         img.onload = function() {
+            const cX = 265, cY = 420, cW = 550, cH = 910;
+
+            // วาดเงาหลังไพ่ให้มีมิติลอยออกมาจากฉากหลัง
+            ctx.shadowColor = '#f4ca64';
+            ctx.shadowBlur = 80;
+            ctx.fillStyle = '#000';
+            ctx.fillRect(cX, cY, cW, cH);
+            
+            ctx.shadowBlur = 0;
+            ctx.drawImage(img, cX, cY, cW, cH);
+
+            // วาดกรอบโลหะทองคำล้อมรอบตัวไพ่
+            const frameGrad = ctx.createLinearGradient(cX, cY, cX + cW, cY + cH);
+            frameGrad.addColorStop(0, '#FFF9C4');
+            frameGrad.addColorStop(0.5, '#B38728');
+            frameGrad.addColorStop(1, '#F4CA64');
+            ctx.strokeStyle = frameGrad;
+            ctx.lineWidth = 14;
+            ctx.strokeRect(cX, cY, cW, cH);
+
+            // 6. เรนเดอร์ส่วนตัวเลขมงคล (ดึงจากดวงจริง)
+            ctx.fillStyle = '#34d399';
+            ctx.font = '600 48px Sarabun';
+            ctx.fillText('เลขมงคลหนุนโชคลาภทรัพย์สิน', 540, 1510);
+
+            // รวมตัวเลข 3 ตัว และ 2 ตัว เข้าด้วยกันเป็นชุดมงคล
+            let numStr = '7 8 9  4 5'; // ค่าฟอลแบ็ค
+            if (r.lottery3Digits && r.lottery2Digits) {
+               numStr = `${r.lottery3Digits.slice(0,1).join(' ')} - ${r.lottery2Digits.slice(0,2).join(' ')}`;
+            }
+
+            const goldNum = ctx.createLinearGradient(0, 1540, 0, 1680);
+            goldNum.addColorStop(0, '#FFF9C4');
+            goldNum.addColorStop(0.5, '#F4CA64');
+            goldNum.addColorStop(1, '#B38728');
+            
+            ctx.fillStyle = goldNum;
+            ctx.font = '800 130px Sarabun';
+            ctx.shadowColor = 'rgba(244,202,100,0.7)';
+            ctx.shadowBlur = 35;
+            ctx.fillText(numStr, 540, 1660);
+
+            // 7. พิมพ์ลายน้ำของแบรนด์คุณ
+            ctx.shadowBlur = 0;
+            ctx.fillStyle = 'rgba(255,255,255,0.25)';
+            ctx.font = '36px Sarabun';
+            ctx.fillText('POWERED BY @KRU_HOROSCOPE', 540, 1830);
+            
+            hideLoading();
+         };
+         
+         img.onerror = function() {
+            hideLoading();
+            toast('รูปภาพประกอบมีขนาดใหญ่เกินไปชั่วคราว ลองกดใหม่อีกครั้งครับ');
+         };
+
+      } catch (err) {
+         hideLoading();
+         toast('ระบบคำนวณกราฟิกขัดข้อง: ' + err.message, true);
+      }
+    };
+
+    // ตัวควบคุมสิทธิ์ปุ่มดาวน์โหลดไฟล์ภาพวอลเปเปอร์สุทธิ
+    getEl('downloadWallpaperBtn').onclick = () => {
+      const canvas = getEl('talismanCanvas');
+      const link = document.createElement('a');
+      link.download = `Wallpaper_${appState.reading.customerName || 'Premium'}.png`;
+      link.href = canvas.toDataURL('image/png', 1.0);
+      link.click();
+      toast('เริ่มดาวน์โหลดวอลเปเปอร์มงคลพรีเมียมแล้วครับ! 🎉');
+    };
+
+    // ============================================================================
+    // [เพิ่มใหม่]: คัดลอกคำสั่งจากปุ่มวอลเปเปอร์ด้านบน มาผูกกับปุ่มด้านล่างด้วย
+    // ============================================================================
+    if (getEl('createWallpaperBtnChat')) {
+        getEl('createWallpaperBtnChat').onclick = getEl('createWallpaperBtn').onclick;
+    }
 
     // คำสั่งปุ่มทำงานทั้งหมด
     getEl('pdfBtn').onclick = () => { setStep(4); window.print(); };
     getEl('pdfChatBtn').onclick = () => { setStep(4); window.print(); };
     getEl('downloadPdfBtn').onclick = () => { setStep(4); triggerSaveAsPdf(); };
     getEl('downloadChatPdfBtn').onclick = () => { setStep(4); triggerSaveAsPdf(); };
+
 
     function trackAndRedirect(productId, url) { if (productId) google.script.run.trackProductClick(productId); window.open(url, '_blank'); }
 
