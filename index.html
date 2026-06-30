@@ -29,9 +29,15 @@
     .btn{background:linear-gradient(135deg,var(--gold),#d8a82b);color:#1b102a} .btn2{background:transparent;border:1px solid var(--gold);color:var(--gold2)}
     .input-wrap{position:relative}.hide{display:none !important}.row{display:grid;gap:14px;grid-template-columns:repeat(2,1fr)}
     .pill{display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.035);margin:6px 8px 0 0; word-break: keep-all;}
-    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
-    .product{padding:16px;border-radius:18px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(0,0,0,.18));text-decoration:none;color:var(--txt);min-height:170px;transition:0.3s}
+    
+    /* [แก้ไข]: ปรับตะกร้าสินค้าให้โชว์เป็นแนวนอนเลื่อนสไลด์ (Horizontal Scroll) */
+    .cards { display: flex; overflow-x: auto; gap: 16px; padding-bottom: 16px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: thin; scrollbar-color: var(--gold) rgba(0,0,0,0.2); }
+    .cards::-webkit-scrollbar { height: 6px; }
+    .cards::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 10px; }
+    .cards::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
+    .product { flex: 0 0 280px; scroll-snap-align: start; padding:16px; border-radius:18px; border:1px solid var(--line); background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(0,0,0,.18)); text-decoration:none; color:var(--txt); display: flex; flex-direction: column; justify-content: space-between; transition:0.3s; }
     .product:hover{transform:translateY(-4px);border-color:var(--gold);box-shadow:0 10px 20px rgba(0,0,0,0.2)}
+    
     .progress{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.step{padding:8px 12px;border-radius:999px;border:1px solid rgba(244,202,100,.2);background:rgba(255,255,255,.04);font-size:.82rem;color:var(--muted);transition:0.3s; white-space: nowrap;}
     .step.active{color:var(--gold2);border-color:rgba(244,202,100,.45);background:rgba(244,202,100,.1)}
     .chat{display:flex;flex-direction:column;gap:10px}.chat-status{display:none;align-items:center;gap:10px;padding:12px 14px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid rgba(244,202,100,.18);margin-bottom:12px}
@@ -45,7 +51,6 @@
     .loading-overlay{position:fixed;inset:0;background:rgba(10,8,18,.72);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:120}.loading-overlay.show{display:flex}
     .loading-box{min-width:280px;max-width:90vw;background:rgba(18,12,32,.92);border:1px solid var(--line);border-radius:20px;padding:22px;text-align:center;box-shadow:var(--shadow)}
     
-    /* --- อัปเกรด: เอฟเฟกต์หมุนโหลดแบบวงแหวนโหราศาสตร์ (Cosmic Spinner) --- */
     .cosmic-spinner { position: relative; width: 75px; height: 75px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; }
     .cosmic-spinner .ring { position: absolute; border-radius: 50%; border: 3px solid transparent; }
     .cosmic-spinner .ring1 { width: 100%; height: 100%; border-top: 3px solid var(--gold); border-right: 3px solid rgba(244,202,100,0.2); animation: spin-forward 1.2s linear infinite; box-shadow: 0 -5px 15px rgba(244,202,100,0.2); }
@@ -56,15 +61,18 @@
     @keyframes spin-reverse { 100% { transform: rotate(-360deg); } }
     @keyframes pulse-core { 0% { transform: scale(0.8); opacity: 0.6; } 100% { transform: scale(1.15); opacity: 1; } }
 
-    /* --- อัปเกรด: เอฟเฟกต์จุดไข่ปลาตอนอาจารย์พิมพ์แชท --- */
     .typing-dots { display: flex; gap: 6px; margin-right: 12px; align-items: center; }
     .typing-dots span { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); animation: bounce-dot 1.4s infinite ease-in-out both; box-shadow: 0 0 8px rgba(244,202,100,0.6); }
     .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
     .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
     @keyframes bounce-dot { 0%, 80%, 100% { transform: scale(0.3); opacity: 0.4; } 40% { transform: scale(1); opacity: 1; } }
     
-    .modal-backdrop{position:fixed;inset:0;background:rgba(10,8,18,.8);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;z-index:150;padding:16px}.modal-backdrop.show{display:flex}.modal{width:min(450px,100%);background:rgba(18,12,32,.98);border:1px solid var(--line);border-radius:24px;box-shadow:0 15px 50px rgba(0,0,0,0.5);overflow:hidden; animation:slideDown 0.3s ease-out;}
-    .modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 20px;border-bottom:1px solid rgba(255,255,255,.06)}.modal-title{margin:0;color:#f87171}.modal-body{padding:24px 20px; text-align:center; font-size:1.1rem; line-height:1.6; color:#fff;}.modal-actions{display:flex;gap:10px;justify-content:center;padding:0 20px 24px}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(10,8,18,.8);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;z-index:150;padding:16px}.modal-backdrop.show{display:flex}
+   .modal{width:min(450px,100%); max-height: 90vh; display: flex; flex-direction: column; background:rgba(18,12,32,.98);border:1px solid var(--line);border-radius:24px;box-shadow:0 15px 50px rgba(0,0,0,0.5);overflow:hidden; animation:slideDown 0.3s ease-out;}
+    .modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 20px;border-bottom:1px solid rgba(255,255,255,.06); flex-shrink: 0;}
+    .modal-title{margin:0;color:#f87171}
+    .modal-body{padding:24px 20px; text-align:center; font-size:1.1rem; line-height:1.6; color:#fff; overflow-y: auto; flex: 1;}
+    .modal-actions{display:flex;gap:10px;justify-content:center;padding:16px 20px 24px; flex-shrink: 0;}
     @keyframes slideDown{from{transform:translateY(-20px);opacity:0}to{transform:translateY(0);opacity:1}}
     .toast{position:fixed;right:16px;bottom:16px;background:#130d22;border:1px solid var(--gold);color:var(--txt);padding:12px 16px;border-radius:14px;max-width:90vw;display:none;z-index:130;box-shadow:0 10px 30px rgba(0,0,0,0.5)}.toast.show{display:block;animation:slideUp 0.3s ease-out}@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
     
@@ -131,17 +139,15 @@
     .star:hover, .star:hover ~ .star { color: #fbbf24; transform: scale(1.1); text-shadow: 0 0 20px rgba(251, 191, 36, 0.6); }
     .rating-submitted { display: none; color: #34d399; font-weight: bold; font-size: 1.1rem; margin-top: 16px; animation: slideUp 0.3s; }
 
-    /* --- CSS สำหรับระบบสแกนหน้าแบบไฮเทค (Cyberpunk Scanner) --- */
+    /* --- CSS สำหรับระบบสแกนหน้าแบบไฮเทค --- */
     .camera-container { width: 100%; max-width: 320px; margin: 0 auto; position: relative; border-radius: 16px; overflow: hidden; border: 2px solid rgba(255,255,255,0.2); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
     #cameraPreview, #scanningImage { width: 100%; display: block; background: #000; object-fit: cover; }
     .camera-overlay { position: absolute; inset: 0; border: 2px dashed rgba(255,255,255,0.4); border-radius: 50%; margin: 25px; box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6); pointer-events: none; }
     
-    /* เอฟเฟกต์ตอนสแกนหน้า */
     .cyber-scanner { border: 2px solid #0ea5e9; box-shadow: 0 0 20px rgba(14, 165, 233, 0.5); position: relative; }
     .scanner-laser { position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: #34d399; box-shadow: 0 0 15px #34d399, 0 0 30px #34d399; animation: scanLaser 1.8s infinite ease-in-out; z-index: 10; }
     .scanner-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(14, 165, 233, 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(14, 165, 233, 0.2) 1px, transparent 1px); background-size: 25px 25px; z-index: 5; pointer-events: none; opacity: 0.6; }
     
-    /* มุมสี่ด้านแบบ UI ล้ำยุค */
     .scan-corners { position: absolute; inset: 12px; z-index: 6; pointer-events: none; }
     .scan-corners::before, .scan-corners::after { content: ''; position: absolute; width: 35px; height: 35px; border-color: #0ea5e9; border-style: solid; }
     .scan-corners::before { top: 0; left: 0; border-width: 3px 0 0 3px; }
@@ -153,20 +159,6 @@
     @keyframes scanLaser { 0% { top: 5%; opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { top: 95%; opacity: 0; } }
     .hud-text { color: #0ea5e9; font-family: monospace; font-size: 0.85rem; text-align: left; position: absolute; bottom: 12px; left: 16px; z-index: 20; text-shadow: 0 0 5px #000; animation: blinkText 1s infinite alternate; }
     @keyframes blinkText { from { opacity: 0.6; } to { opacity: 1; } }
-
-/* ============================================================================ */
-/* ฟังก์ชันแก้ไข: ปรับแต่งให้รูปภาพวัตถุมงคลแสดงผลพอดีกรอบ 100% ไม่โดนตัดขอบ */
-/* ============================================================================ */
-.product img { 
-  width: 100%; 
-  height: 160px; 
-  object-fit: contain !important; 
-  background-color: rgba(0,0,0,0.3) !important; 
-  padding: 8px !important; 
-  border-radius: 12px; 
-  box-sizing: border-box !important;
-}
-
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -210,6 +202,28 @@
       </div>
     </div>
   </div>
+
+  <div class="modal-backdrop" id="wallpaperModal">
+    <div class="modal" style="width: min(500px, 100%);">
+      <div class="modal-head">
+        <h3 class="modal-title" style="color:var(--gold2);">📱 วอลเปเปอร์มงคลประจำดวงชะตา</h3>
+        <button class="modal-close" onclick="document.getElementById('wallpaperModal').classList.remove('show');" type="button">✕</button>
+      </div>
+      <div class="modal-body" style="background: #0a0410; padding: 20px; text-align: center;">
+        <p class="muted" style="font-size:0.9rem; margin-top:0; margin-bottom:15px;">✨ ระบบคำนวณสีมงคล ไพ่ยิปซี และตัวเลขนำโชคประกอบเป็นภาพเฉพาะคุณเรียบร้อยแล้วครับ</p>
+        
+        <div style="padding: 10px; background: rgba(255,255,255,0.02); border: 1px solid rgba(244,202,100,0.15); border-radius: 20px; display: inline-block;">
+              <canvas id="talismanCanvas" width="1080" height="1920" style="max-height: 45vh; width: auto; max-width: 100%; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); display: block; margin: 0 auto;"></canvas>
+        </div>
+        
+        <p style="font-size:0.8rem; color:#f87171; margin-top:12px; margin-bottom:0; font-style:italic;">* สำหรับผู้ใช้ iOS หากกดปุ่มแล้วไม่ดาวน์โหลด ให้ใช้นิ้วแตะค้างที่รูปภาพแล้วเลือก "บันทึกไปยังแอปรูปภาพ"</p>
+      </div>
+      <div class="modal-actions" style="background: #0a0410; padding-bottom:24px;">
+        <button class="btn2" onclick="document.getElementById('wallpaperModal').classList.remove('show')" style="padding:12px 20px;">ปิดหน้าต่าง</button>
+        <button class="btn" id="downloadWallpaperBtn" style="padding:12px 24px; box-shadow: 0 4px 15px rgba(244,202,100,0.4);">💾 บันทึกรูปภาพลงเครื่อง</button>
+      </div>
+    </div>
+  </div>
   
   <div class="wrap">
     <div class="hero">
@@ -226,7 +240,6 @@
     </div>
 
     <div id="loginView" class="card section" style="text-align: center; padding: 40px 20px;">
-      
       <div style="font-size: 3.5rem; margin-bottom: 10px; line-height: 1;">⛩️</div>
       <h2 class="h2" style="font-size: 1.8rem; text-shadow: 0 2px 15px rgba(244,202,100,0.5);">ประตูดวงชะตา (VIP)</h2>
       <p class="muted" style="margin-bottom: 30px; font-size: 1.05rem;">กรุณากรอกรหัสพรีเมียม เพื่อเปิดดวงชะตาและรับคำทำนาย</p>
@@ -255,16 +268,10 @@
           >
         </div>
 
-        <a 
-            id="lineContactBtn" 
-            href="https://line.me/ti/p/HctEkwu4dM" 
-            target="_blank" 
-            style="display: block; background: linear-gradient(135deg, #06C755, #05A344); color: #fff; text-decoration: none; padding: 16px; border-radius: 14px; font-weight: 800; font-size: 1.15rem; text-align: center; box-shadow: 0 6px 20px rgba(6,199,85,0.4); transition: 0.2s;"
-          >
+        <a id="lineContactBtn" href="https://line.me/ti/p/HctEkwu4dM" target="_blank" style="display: block; background: linear-gradient(135deg, #06C755, #05A344); color: #fff; text-decoration: none; padding: 16px; border-radius: 14px; font-weight: 800; font-size: 1.15rem; text-align: center; box-shadow: 0 6px 20px rgba(6,199,85,0.4); transition: 0.2s;">
             เพิ่มเพื่อนผ่าน LINE
-          </a>
+        </a>
       </div>
-      
     </div>
 
     <div id="userView" class="hide grid two">
@@ -349,7 +356,6 @@
           <div style="display: flex; gap: 8px;">
             <button class="btn2" id="backBtn">กลับไปแก้ข้อมูล</button>
             <button class="btn2" id="pdfBtn">🖨️ สั่งพิมพ์ใบดวงชะตา</button>
-            
             <button class="btn2" id="downloadPdfBtn" style="color: #60a5fa; border-color: #60a5fa;">📥 โหลดเป็น PDF</button>
             <button class="btn" id="openEmailModalBtn" style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none;">📧 ส่งผลเข้าอีเมล</button>
             <button class="btn" id="createWallpaperBtn" style="background: linear-gradient(135deg, var(--gold), #d8a82b); color: #1b102a; border: none;">📱 รับวอลเปเปอร์หนุนดวง VIP</button>
@@ -418,49 +424,39 @@
           <div id="faceScanActionBox">
             <p class="muted" style="margin-top:0;">ให้ AI อ่านเค้าโครงใบหน้า หน้าผาก คิ้ว ตา จมูก ปาก ตามหลักตำราจีนโบราณ เพื่อทำนายพื้นดวง ทรัพย์สิน และหน้าที่การงาน</p>
             <div id="cameraSetupBox">
-           <button class="btn" style="background: linear-gradient(135deg, #0ea5e9, #0284c7); color: #fff; width:100%; box-shadow: 0 6px 15px rgba(14,165,233,0.3);" onclick="startCamera()">📷 เปิดกล้องสแกนใบหน้า (1 สิทธิ์)</button>
-           <p style="font-size:0.8rem; color:#f87171; margin-top:10px;">* โปรดถอดแว่นตาและหันหน้าตรง เพื่อความแม่นยำ</p>
-        </div>
+               <button class="btn" style="background: linear-gradient(135deg, #0ea5e9, #0284c7); color: #fff; width:100%; box-shadow: 0 6px 15px rgba(14,165,233,0.3);" onclick="startCamera()">📷 เปิดกล้องสแกนใบหน้า (1 สิทธิ์)</button>
+               <p style="font-size:0.8rem; color:#f87171; margin-top:10px;">* โปรดถอดแว่นตาและหันหน้าตรง เพื่อความแม่นยำ</p>
+            </div>
+            <input type="file" id="cameraInput" accept="image/*" capture="user" class="hide" onchange="handleCameraUpload(event)">
 
-        <input type="file" id="cameraInput" accept="image/*" capture="user" class="hide" onchange="handleCameraUpload(event)">
-
-        <div id="cameraActiveBox" class="hide">
-           <div class="camera-container">
-              <img id="cameraPreview" alt="Face Preview">
-              <div class="camera-overlay"></div>
-           </div>
-           <p style="color:#0ea5e9; font-weight:bold; margin: 16px 0;">ภาพใบหน้าชัดเจนดีหรือไม่? กดวิเคราะห์ได้เลยครับ</p>
-           <div style="display:flex; gap:10px; justify-content:center;">
-              <button class="btn2" style="border-color:#f87171; color:#f87171; width:120px;" onclick="stopCamera()">ถ่ายใหม่</button>
-              <button class="btn" style="background: #0ea5e9; color: #fff;" onclick="captureAndAnalyzeFace()">✨ สแกนใบหน้า</button>
-           </div>
-           <canvas id="cameraCanvas" class="hide"></canvas>
+            <div id="cameraActiveBox" class="hide">
+               <div class="camera-container">
+                  <img id="cameraPreview" alt="Face Preview">
+                  <div class="camera-overlay"></div>
+               </div>
+               <p style="color:#0ea5e9; font-weight:bold; margin: 16px 0;">ภาพใบหน้าชัดเจนดีหรือไม่? กดวิเคราะห์ได้เลยครับ</p>
+               <div style="display:flex; gap:10px; justify-content:center;">
+                  <button class="btn2" style="border-color:#f87171; color:#f87171; width:120px;" onclick="stopCamera()">ถ่ายใหม่</button>
+                  <button class="btn" style="background: #0ea5e9; color: #fff;" onclick="captureAndAnalyzeFace()">✨ สแกนใบหน้า</button>
+               </div>
+               <canvas id="cameraCanvas" class="hide"></canvas>
+            </div>
+            
+            <div id="faceScanningBox" class="hide">
+               <div class="camera-container cyber-scanner">
+                  <img id="scanningImage" alt="Scanning Face" style="filter: brightness(1.2) contrast(1.1) grayscale(0.2);">
+                  <div class="scanner-grid"></div>
+                  <div class="scanner-laser"></div>
+                  <div class="scan-corners"><span></span></div>
+                  <div class="hud-text" id="hudProgressText">ANALYZING FACIAL STRUCTURE...</div>
+               </div>
+               <p style="color:#34d399; font-weight:bold; margin-top: 20px; animation: blinkText 1s infinite alternate;" id="scanStatusThai">กำลังเชื่อมต่อฐานข้อมูลโหราศาสตร์...</p>
+            </div>
+          </div>
+          <div id="faceScanResultBox" class="hide"></div>
         </div>
-        
-        <div id="faceScanningBox" class="hide">
-           <div class="camera-container cyber-scanner">
-              <img id="scanningImage" alt="Scanning Face" style="filter: brightness(1.2) contrast(1.1) grayscale(0.2);">
-              <div class="scanner-grid"></div>
-              <div class="scanner-laser"></div>
-              <div class="scan-corners"><span></span></div>
-              <div class="hud-text" id="hudProgressText">ANALYZING FACIAL STRUCTURE...</div>
-           </div>
-           <p style="color:#34d399; font-weight:bold; margin-top: 20px; animation: blinkText 1s infinite alternate;" id="scanStatusThai">กำลังเชื่อมต่อฐานข้อมูลโหราศาสตร์...</p>
-        </div>
-        
       </div>
-      
-      <div id="faceScanResultBox" class="hide"></div>
-    </div>
-  </div>
-
-      <div class="card section">
-        <h2 class="h2">วัตถุมงคลแนะนำ (หนุนดวงชะตานี้โดยเฉพาะ)</h2>
-        <div id="productsBlock" class="cards"></div>
-      </div>
-    </div>
-
-    <div id="chatView" class="hide card section" style="margin-top:16px">
+    </div> <div id="chatView" class="hide card section" style="margin-top:16px">
       <div class="chat-header-flex">
         <div>
            <h2 class="h2" style="margin:0;">ปรึกษาโหราจารย์เพิ่มเติม</h2>
@@ -486,6 +482,9 @@
         <textarea id="chatInput" rows="2" placeholder="พิมพ์คำถาม..."></textarea>
         <button class="btn" id="sendChatBtn">ส่งคำถาม</button>
       </div>
+    </div> <div id="productsView" class="hide card section" style="margin-top:16px">
+      <h2 class="h2">วัตถุมงคลแนะนำ (หนุนดวงชะตานี้โดยเฉพาะ)</h2>
+      <div id="productsBlock" class="cards"></div>
     </div>
 
     <div id="ratingView" class="hide card section rating-container" style="margin-top:16px;">
@@ -499,37 +498,15 @@
             <span class="star" data-value="1">★</span>
          </div>
          <div id="ratingThanks" class="rating-submitted" style="text-align:center;">✅ ขอบคุณสำหรับคะแนนประเมินครับ!</div>
-      </div>
+    </div>
 
     <div id="bottomLogoutContainer" class="hide" style="margin-top: 20px; text-align: center;">
       <button class="btn2" style="color: #f87171; border-color: #f87171; width: 100%; max-width: 400px; padding: 14px;" onclick="triggerLogoutAction()">🚪 ออกจากระบบปลอดภัย</button>
     </div>
-  </div>
-
-    <div class="modal-backdrop" id="wallpaperModal">
-    <div class="modal" style="width: min(500px, 100%);">
-      <div class="modal-head">
-        <h3 class="modal-title" style="color:var(--gold2);">📱 วอลเปเปอร์มงคลประจำดวงชะตาของคุณ</h3>
-        <button class="modal-close" onclick="document.getElementById('emailModal').classList.remove('show'); document.getElementById('wallpaperModal').classList.remove('show');" type="button">✕</button>
-      </div>
-      <div class="modal-body" style="background: #0a0410; padding: 20px; text-align: center;">
-        <p class="muted" style="font-size:0.9rem; margin-top:0; margin-bottom:15px;">✨ ระบบคำนวณสีมงคล ไพ่ยิปซี และตัวเลขนำโชคประกอบเป็นภาพเฉพาะคุณเรียบร้อยแล้วครับ</p>
-        
-        <div style="padding: 10px; background: rgba(255,255,255,0.02); border: 1px solid rgba(244,202,100,0.15); border-radius: 20px; display: inline-block;">
-          <canvas id="talismanCanvas" width="1080" height="1920" style="max-width: 290px; width: 100%; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); display: block;"></canvas>
-        </div>
-        
-        <p style="font-size:0.8rem; color:#f87171; margin-top:12px; margin-bottom:0; font-style:italic;">* สำหรับผู้ใช้ LINE/TikTok บน iOS หากกดปุ่มแล้วไม่ดาวน์โหลด ให้ใช้นิ้วแตะค้างที่รูปภาพแล้วเลือก "บันทึกไปยังแอปรูปภาพ" ได้เลยครับ</p>
-      </div>
-      <div class="modal-actions" style="background: #0a0410; padding-bottom:24px;">
-        <button class="btn2" onclick="document.getElementById('wallpaperModal').classList.remove('show')" style="padding:12px 20px;">ปิดหน้าต่าง</button>
-        <button class="btn" id="downloadWallpaperBtn" style="padding:12px 24px; box-shadow: 0 4px 15px rgba(244,202,100,0.4);">💾 บันทึกรูปภาพลงเครื่อง</button>
-      </div>
-    </div>
-  </div>
-
+  </div> 
+  
   <script>
-      // ============================================================================
+    // ============================================================================
     // เพิ่มใหม่: Proxy จำลองคำสั่ง google.script.run ให้ทำงานข้ามโดเมนได้ (สำหรับ GitHub Pages)
     // ============================================================================
      // ============================================================================
@@ -594,8 +571,10 @@
         }
       });
     }
-    // โค้ดเดิมของคุณทั้งหมดจะอยู่ต่อจากบรรทัดนี้...
     
+    
+    // โค้ดเดิมของคุณทั้งหมดจะอยู่ต่อจากบรรทัดนี้...
+
     const uniqueClientId = 'SSID-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
     let appState = { loggedIn: false, keyCode: '', reading: null, chat: [], keyInfo: null, seamsiUsed: false, tarotUsed: false };
     let lastPayloadStr = ""; let countdownInterval = null; let autoSaveInterval = null; 
@@ -624,9 +603,6 @@
     const getEl = (id) => document.getElementById(id);
     
     window.addEventListener('DOMContentLoaded', () => {
-      // ============================================================================
-      // [เพิ่มใหม่]: อ่านพารามิเตอร์ key จาก URL แล้วนำมากรอกในช่องให้อัตโนมัติ
-      // ============================================================================
       const urlParams = new URLSearchParams(window.location.search);
       const autoKey = urlParams.get('key');
       if (autoKey && getEl('keyInput')) {
@@ -639,10 +615,7 @@
         for(let i=0; i<60; i++) mSel.innerHTML += `<option value="${String(i).padStart(2,'0')}">${String(i).padStart(2,'0')}</option>`;
       }
       
-      // ดึงข้อมูลการตั้งค่าจากหลังบ้านมาตรวจสอบ
       google.script.run.withSuccessHandler((settings) => {
-         
-         // 1. ตรวจสอบโหมดปิดปรับปรุง
          if (settings && settings.MAINTENANCE_MODE) {
             document.querySelector('.wrap').innerHTML = `
               <div style="text-align:center; padding: 60px 20px; margin-top: 50px; background: rgba(0,0,0,0.5); border-radius: 24px; border: 1px solid rgba(244,202,100,0.3); backdrop-filter: blur(10px); box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
@@ -651,7 +624,6 @@
                 <p class="muted" style="font-size: 1.15rem; line-height: 1.6;">ขออภัยในความไม่สะดวกครับ โหราจารย์กำลังตั้งจิตปรับกระแสญาณให้แม่นยำยิ่งขึ้น<br><br><b>กรุณากลับมาใช้งานใหม่ในภายหลังครับ 🙏</b></p>
               </div>`;
          } 
-         // 2. ถ้าไม่ได้ปิดปรับปรุง ให้ตรวจสอบว่ามีแถบประกาศไหม
          else if (settings && settings.ANNOUNCEMENT_TEXT && String(settings.ANNOUNCEMENT_TEXT).trim() !== '') {
             const banner = document.getElementById('announcementBanner');
             if (banner) {
@@ -660,28 +632,26 @@
             }
          }
 
-         // 3. ดึงลิงก์ LINE จาก Admin มาอัปเดตปุ่ม (ทำแยกกัน ไม่ตีกับใคร)
          if (settings && settings.ADMIN_LINE_URL) {
             const lineBtn = document.getElementById('lineContactBtn');
             if (lineBtn) lineBtn.href = settings.ADMIN_LINE_URL;
          }
 
-         // [เพิ่มใหม่]: เก็บสถานะการเปิด/ปิด สแกนหน้าไว้ในตัวแปรระบบ
          if (settings && settings.FACE_SCAN_ENABLED !== undefined) {
              appState.isFaceScanEnabled = settings.FACE_SCAN_ENABLED;
          } else {
-             appState.isFaceScanEnabled = true; // ค่าพื้นฐาน
+             appState.isFaceScanEnabled = true;
          }
-
       }).getPublicSettings();
     });
     
     const show = (id) => {
-      ['loginView','userView','resultView','chatView','ratingView'].forEach(v => { getEl(v).classList.add('hide'); });
+      ['loginView','userView','resultView','chatView','productsView','ratingView'].forEach(v => { getEl(v).classList.add('hide'); });
       if (id === 'resultView') {
         getEl('resultView').classList.remove('hide');
         if (appState.keyInfo && appState.keyInfo.isReadOnly) {
             getEl('chatView').classList.remove('hide'); 
+            getEl('productsView').classList.remove('hide'); 
             getEl('readOnlyBanner').classList.remove('hide');
             if(appState.keyInfo.expireDateStr) {
                 getEl('readOnlyBanner').innerHTML = `⚠️ โควตาการถาม/เวลา ของคุณหมดแล้ว แต่คุณสามารถดูประวัติคำทำนายย้อนหลังและสั่งพิมพ์ได้ (จนถึงวันที่ ${appState.keyInfo.expireDateStr})`;
@@ -694,6 +664,7 @@
             document.querySelector('.composer').classList.add('hide'); 
         } else {
             getEl('chatView').classList.remove('hide');
+            getEl('productsView').classList.remove('hide');
             getEl('readOnlyBanner').classList.add('hide');
             getEl('sessionInfo').classList.remove('hide'); 
             getEl('manualTempleCard').classList.remove('hide');
@@ -702,7 +673,7 @@
             getEl('backBtn').classList.remove('hide');
             document.querySelector('.composer').classList.remove('hide');
         }
-        getEl('ratingView').classList.remove('hide'); // สั่งให้กล่องดาวโชว์พร้อมหน้าผลลัพธ์
+        getEl('ratingView').classList.remove('hide'); 
         getEl('bottomLogoutContainer').classList.remove('hide');
       } else {
         getEl(id).classList.remove('hide');
@@ -712,6 +683,37 @@
         getEl('bottomLogoutContainer').classList.add('hide');
       }
     };
+
+    function renderProducts(products) {
+      let prodHtml = '';
+      if (products && products.length > 0) {
+        for(let i=0; i<products.length; i++){
+          let p = products[i];
+          let imgHtml = '';
+          if (p.productImageUrl && p.productImageUrl.trim() !== '') {
+             let finalImgUrl = p.productImageUrl.trim();
+             const driveRegex = /drive\.google\.com\/file\/d\/([-_A-Za-z0-9]+)/;
+             const match = finalImgUrl.match(driveRegex);
+             if (match && match[1]) finalImgUrl = 'https://drive.google.com/thumbnail?id=' + match[1] + '&sz=w800';
+             imgHtml = '<img src="' + finalImgUrl + '" alt="' + (p.productName || 'สินค้ามงคล') + '" style="width: 100%; height: 160px; object-fit: contain; background-color: rgba(0,0,0,0.3); padding: 8px; border-radius: 12px; margin-top: 14px; border: 1px solid rgba(255,255,255,0.1); display: block; box-sizing: border-box;" onerror="this.style.display=\'none\';">';
+          }
+
+          let badgeHtml = '';
+          if (p.source === 'chat') {
+             badgeHtml = '<div class="badge" style="color: #f87171; border-color: rgba(248, 113, 113, 0.4); background: rgba(248, 113, 113, 0.1);">💬 แก้เคล็ดจากความกังวล</div>';
+          } else {
+             badgeHtml = '<div class="badge">🔮 เสริมดวงชะตานี้</div>';
+          }
+
+          prodHtml += '<div class="product" style="cursor:pointer; display: flex; flex-direction: column; justify-content: space-between; animation: fadeIn 0.5s ease;" onclick="trackAndRedirect(\'' + (p.id || '') + '\', \'' + (p.productUrl || '') + '\')">';
+          prodHtml += '<div>' + badgeHtml + imgHtml + '<h3 style="margin-top: 14px; margin-bottom: 8px;">' + (p.productName || '') + '</h3><p class="muted" style="margin-top: 0; line-height: 1.5;">' + (p.reason || '') + '</p></div>';
+          prodHtml += '<div style="margin-top: 16px; text-align: center;"><span style="display: block; background: linear-gradient(135deg, rgba(244,202,100,0.15), rgba(244,202,100,0.05)); border: 1px solid var(--gold); color: var(--gold2); padding: 8px 0; border-radius: 10px; font-weight: 700; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">🛒 คลิกเพื่อดูรายละเอียด / บูชา</span></div></div>';
+        }
+      } else {
+        prodHtml = '<div class="muted">ยังไม่มีสินค้าแนะนำ</div>';
+      }
+      getEl('productsBlock').innerHTML = prodHtml;
+    }
     
     function setChatStatus(text, mode='idle'){ getEl('chatStatusText').textContent = text; if(mode !== 'idle') getEl('chatStatusBar').classList.add('show'); else getEl('chatStatusBar').classList.remove('show'); }
     const showLoading = (msg='กำลังประมวลผล...') => { getEl('loadingText').textContent = msg; getEl('loadingOverlay').classList.add('show'); };
@@ -747,10 +749,8 @@
         .replace(/\\n/g, '\n') 
         .replace(/<br\s*\/?>/gi, '\n')
         .replace(/\r\n/g, '\n')
-        // [เพิ่มใหม่]: ดักจับแท็กหลอนที่ AI สร้างขึ้นมาเอง ให้กลายเป็นสีและไอคอนสวยๆ
         .replace(/\[color:[^\]]+\](.*?)\[\/color\]/gi, '<span class="text-gold" style="font-weight:700;">$1</span>')
         .replace(/\[nationwideTemples\](.*?)\[\/nationwideTemples\]/gi, '<span class="text-lucky" style="font-weight:700;">⛩️ $1</span>')
-        // (แท็กดั้งเดิมของเรา)
         .replace(/\[GOOD\]([\s\S]*?)\[\/GOOD\]/gi, '<span class="text-lucky">$1</span>')
         .replace(/\[BAD\]([\s\S]*?)\[\/BAD\]/gi, '<span class="text-warning">$1</span>')
         .replace(/\*\*(.*?)\*\*/g, '<span class="text-gold" style="font-weight:700;">$1</span>');
@@ -761,7 +761,6 @@
         return '<a href="' + cleanUrl + '" target="_blank" style="color: #60a5fa; text-decoration: underline; word-break: break-all;">' + cleanUrl + '</a>' + url.slice(cleanUrl.length);
       });
       
-      // ดักจับอีกชั้น เผื่อมีแท็ก GOOD/BAD ที่ยังหลุดรอด
       cleanText = cleanText.replace(/\[GOOD\]/gi, '<span class="text-lucky">').replace(/\[\/GOOD\]/gi, '</span>');
       cleanText = cleanText.replace(/\[BAD\]/gi, '<span class="text-warning">').replace(/\[\/BAD\]/gi, '</span>');
       
@@ -787,7 +786,6 @@
           getEl('timeRemainTxt').textContent = "หมดเวลาใช้งาน"; getEl('timeRemainTxt').className = "text-warning";
           getEl('sendChatBtn').disabled = true; getEl('chatInput').disabled = true;
           
-          // [เพิ่มใหม่]: ถ้าเวลาหมด ระบบเตะออก ก็ให้ส่งอีเมลฉบับเต็มทิ้งท้ายให้ลูกค้าด้วย
           if (appState.customerEmail) {
              toast('เวลาใช้งานหมดแล้ว! ระบบกำลังจัดส่งผลคำทำนายเข้าอีเมลให้คุณ...', false, true);
              google.script.run.sendFullReportEmail({ keyCode: appState.keyCode, email: appState.customerEmail });
@@ -813,7 +811,7 @@
                }
            }).syncUserTimer(appState.keyCode, t, false, uniqueClientId);
         }
-      }, 15000); // ส่งเพื่อต่ออายุ Cache ทุกๆ 15 วินาที (ปลอดภัยและเสถียรที่สุด)
+      }, 15000);
     }
 
     window.addEventListener("beforeunload", function () {
@@ -821,10 +819,8 @@
            google.script.run.syncUserTimer(appState.keyCode, appState.keyInfo.remainingSeconds, true, uniqueClientId);
        }
     });
-    // [เพิ่มใหม่]: ดักจับพฤติกรรมมือถือ (สลับแอป, พับหน้าจอ, ปิดจอกะทันหัน)
     document.addEventListener("visibilitychange", function() {
        if (document.visibilityState === 'hidden') {
-           // ทันทีที่แอปถูกพับ ให้ส่งเวลาวินาทีปัจจุบันไปเซฟหลังบ้านทันที เพื่อไม่ให้เวลาสูญหาย
            if(appState.keyCode && appState.keyInfo && appState.keyInfo.remainingSeconds > 0 && !appState.keyInfo.isReadOnly) {
                google.script.run.syncUserTimer(appState.keyCode, appState.keyInfo.remainingSeconds, false, uniqueClientId);
            }
@@ -837,11 +833,8 @@
          resetAppStateAndGoHome();
          return;
       }
-      let remainMins = Math.ceil(appState.keyInfo.remainingSeconds / 60);
-      let remainQs = appState.keyInfo.maxQuestions - appState.keyInfo.questionsUsed;
       showLoading('ระบบกำลังบันทึกข้อมูลดวงชะตาให้ปลอดภัย...');
       
-      // [เพิ่มใหม่]: ส่งอีเมลผลคำทำนายฉบับสมบูรณ์ให้ทันที หากลูกค้าเคยกรอกอีเมลไว้หน้าแรก
       if (appState.customerEmail) {
          toast('กำลังเตรียมจัดส่งสำเนาผลคำทำนาย (พร้อมไพ่และเซียมซี) เข้าอีเมลของคุณ...', false, true);
          google.script.run.sendFullReportEmail({ keyCode: appState.keyCode, email: appState.customerEmail });
@@ -863,13 +856,9 @@
         hideLoading(); show('loginView'); setStep(0); 
     }
 
-    // ============================================================================
-    // [แก้ไข]: ฟังก์ชันแสดงผลและอัปเดตโควตาทุกประเภทแบบ Real-time (Index.html)
-    // ============================================================================
     function updateQuotaDisplay() {
       if(!appState.keyInfo || appState.keyInfo.isReadOnly) return;
       
-      // 1. โควตาปรึกษาอาจารย์ (แชท)
       let chatLeft = appState.keyInfo.maxQuestions - appState.keyInfo.questionsUsed;
       chatLeft = chatLeft > 0 ? chatLeft : 0;
       getEl('qRemainTxt').textContent = chatLeft;
@@ -882,7 +871,6 @@
         getEl('qRemainTxt').className = "text-lucky";
       }
 
-      // 2. โควตาค้นหาวัด
       let templeLeft = 2 - templeSearchCount;
       templeLeft = templeLeft > 0 ? templeLeft : 0;
       if (getEl('templeRemainTxt')) {
@@ -890,21 +878,18 @@
          getEl('templeRemainTxt').className = templeLeft > 0 ? "text-lucky" : "text-warning";
       }
 
-      // 3. โควตาเซียมซี
       let seamsiLeft = appState.seamsiUsed ? 0 : 1;
       if (getEl('seamsiRemainTxt')) {
          getEl('seamsiRemainTxt').textContent = seamsiLeft;
          getEl('seamsiRemainTxt').className = seamsiLeft > 0 ? "text-lucky" : "text-warning";
       }
 
-      // 4. โควตาไพ่ยิปซี
       let tarotLeft = appState.tarotUsed ? 0 : 1;
       if (getEl('tarotRemainTxt')) {
          getEl('tarotRemainTxt').textContent = tarotLeft;
          getEl('tarotRemainTxt').className = tarotLeft > 0 ? "text-lucky" : "text-warning";
       }
 
-      // 5. โควตาสแกนโหงวเฮ้ง (ตรวจสอบจากตั้งค่า Admin)
       if (getEl('faceScanQuotaBadge')) {
           if (appState.isFaceScanEnabled) {
              getEl('faceScanQuotaBadge').classList.remove('hide');
@@ -1029,9 +1014,12 @@
            outHtml += '<img src="' + cardImg + '" class="tarot-image" alt="Tarot Card" style="width:100%; border:2px solid #ccc; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.2);"></div>';
          }
          outHtml += '</div><div style="border-top:1px dashed #ccc; padding-top:16px; text-align:left;">';
+         
          for(let i=0; i<cards.length; i++){
-           outHtml += '<div style="margin-bottom: 16px;"><strong style="color:#a78bfa; font-size:1.1rem;">🔮 ' + cards[i].position + ' (' + cards[i].cardName + '):</strong><br>' + formatHighlightText(cards[i].meaning) + '</div>';
+           let c = cards[i];
+           outHtml += '<div style="margin-bottom: 16px;"><strong style="color:#a78bfa; font-size:1.1rem;">🔮 ' + c.position + ' (' + c.cardName + '):</strong><br>' + formatHighlightText(c.meaning) + '</div>';
          }
+         
          if (r.tarotResult.overallAdvice) {
              outHtml += '<div style="margin-top:16px; padding:16px; background:rgba(167, 139, 250, 0.1); border-left:4px solid #a78bfa; border-radius:8px;"><strong style="color:#a78bfa; font-size:1.1rem;">✨ บทสรุปและคำแนะนำจากไพ่:</strong><div style="margin-top:8px;">' + formatHighlightText(r.tarotResult.overallAdvice) + '</div></div>';
          }
@@ -1080,40 +1068,9 @@
              getEl('templeResultContent').innerHTML = finalHtml;
          }
       }
-      
-      let prodHtml = '';
-      const products = r.suggestedProducts || [];
-      if (products.length > 0) {
-        for(let i=0; i<products.length; i++){
-          let p = products[i];
-          
-          let imgHtml = '';
-          if (p.productImageUrl && p.productImageUrl.trim() !== '') {
-             let finalImgUrl = p.productImageUrl.trim();
-             
-             // ค้นหาแพทเทิร์นลิงก์ Google Drive
-             const driveRegex = /drive\.google\.com\/file\/d\/([-_A-Za-z0-9]+)/;
-             const match = finalImgUrl.match(driveRegex);
-             
-             if (match && match[1]) {
-                 // [แก้ไข]: เปลี่ยนไปใช้ Thumbnail API ของ Google Drive แทน ซึ่งเสถียรกว่ามากและไม่ค่อยโดนบล็อก
-                 finalImgUrl = 'https://drive.google.com/thumbnail?id=' + match[1] + '&sz=w800';
-             }
 
-             // [แก้ไข]: เพิ่ม display: block; และ onerror เพื่อซ่อนไอคอนรูปเสีย ถ้ารูปโหลดไม่ขึ้น (เช่น ลืมเปิดแชร์)
-             imgHtml = '<img src="' + finalImgUrl + '" alt="' + (p.productName || 'สินค้ามงคล') + '" style="width: 100%; height: 160px; object-fit: contain; background-color: rgba(0,0,0,0.3); padding: 8px; border-radius: 12px; margin-top: 14px; border: 1px solid rgba(255,255,255,0.1); display: block; box-sizing: border-box;" onerror="this.style.display=\'none\';">';
-          }
+      renderProducts(r.suggestedProducts);
 
-          prodHtml += '<div class="product" style="cursor:pointer; display: flex; flex-direction: column; justify-content: space-between;" onclick="trackAndRedirect(\'' + (p.id || '') + '\', \'' + (p.productUrl || '') + '\')">';
-          prodHtml += '<div><div class="badge">เสริมดวงชะตานี้</div>' + imgHtml + '<h3 style="margin-top: 14px; margin-bottom: 8px;">' + (p.productName || '') + '</h3><p class="muted" style="margin-top: 0; line-height: 1.5;">' + (p.reason || '') + '</p></div>';
-          prodHtml += '<div style="margin-top: 16px; text-align: center;"><span style="display: block; background: linear-gradient(135deg, rgba(244,202,100,0.15), rgba(244,202,100,0.05)); border: 1px solid var(--gold); color: var(--gold2); padding: 8px 0; border-radius: 10px; font-weight: 700; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">🛒 คลิกเพื่อดูรายละเอียด / บูชา</span></div></div>';
-        }
-      } else {
-        prodHtml = '<div class="muted">ยังไม่มีสินค้าแนะนำ</div>';
-      }
-      getEl('productsBlock').innerHTML = prodHtml;
-
-      // [เพิ่มใหม่]: แสดงผลระบบสแกนโหงวเฮ้ง หากเปิดใช้งานและเคยมีข้อมูลแล้ว
       if (appState.isFaceScanEnabled) {
          getEl('faceScanCard').classList.remove('hide');
          if(r.faceScanResult) {
@@ -1162,7 +1119,6 @@
         }
         if (resetBtn) resetBtn.classList.remove('hide');
       }
-      // [เพิ่มบรรทัดนี้ลงไปเพื่อสั่งให้แถบโควตาด้านบนอัปเดตตามด้วย]
       updateQuotaDisplay();
     }
 
@@ -1233,8 +1189,7 @@
         const resBox = getEl('seamsiResultBox'); resBox.classList.remove('hide');
         
         appState.seamsiUsed = true; 
-        updateQuotaDisplay(); // <--- [เพิ่มบรรทัดนี้ลงไป]
-        // [เพิ่มบรรทัดนี้]: ตรวจสอบผลลัพธ์ ถ้าความหมายดีเยี่ยม ให้จุดพลุทันที
+        updateQuotaDisplay();
         if (res.grade === 'ดีเลิศ' || res.grade === 'ดีเยี่ยม' || res.grade === 'ดีมาก') {
             fireConfetti();
         }
@@ -1261,7 +1216,7 @@
         const resBox = getEl('tarotResultBox'); resBox.classList.remove('hide');
         
         appState.tarotUsed = true; 
-        updateQuotaDisplay(); // <--- [เพิ่มบรรทัดนี้ลงไป]
+        updateQuotaDisplay();
         
         let outHtml = '<div class="premium-result-card" style="border-color:#a78bfa; text-align:center;">';
         outHtml += '<div class="premium-title" style="color:#a78bfa; border-color:#a78bfa;">คำทำนายไพ่ยิปซี 3 ใบ (อดีต - ปัจจุบัน - อนาคต)</div>';
@@ -1295,18 +1250,9 @@
       }).drawUserTarot({ keyCode: appState.keyCode, reading: appState.reading });
     }
 
-    // ============================================================================
-    // [แก้ไข]: เปลี่ยนปุ่มไมค์เป็นการแจ้งเตือนให้ใช้ Keyboard Dictation (Index.html)
-    // ============================================================================
-    // ============================================================================
-    // [แก้ไข]: เปลี่ยนปุ่มไมค์เป็นการดึงแป้นพิมพ์ขึ้นมาอัตโนมัติ พร้อมคำแนะนำ (Index.html)
-    // ============================================================================
     function startVoiceRecognition() {
-      // 1. สั่งให้เคอร์เซอร์ไปกะพริบที่ช่องพิมพ์คำถาม เพื่อบังคับให้แป้นพิมพ์ของมือถือเด้งขึ้นมาทันที
       const chatInput = getEl('chatInput');
       chatInput.focus();
-
-      // 2. แสดง Toast แนะนำสั้นๆ (ใช้เวลา 4 วินาทีแล้วหายไปเอง ไม่เกะกะ)
       toast('💡 แป้นพิมพ์เปิดแล้ว! กดไอคอน 🎙️ บนแป้นพิมพ์เพื่อพูดได้เลยครับ');
     }
 
@@ -1349,57 +1295,25 @@
       const birthTime = (h && m) ? `${h}:${m}` : '';
       const phone = getEl('phoneNumber').value.trim();
       const emailForm = getEl('userEmailForm').value.trim(); 
-
-      // =======================================================
-      // [แก้ไข]: เพิ่มระบบ Data Validation ตรวจสอบความถูกต้องของข้อมูล
-      // =======================================================
       
-      // 1. ตรวจสอบชื่อ
       if (!name) return toast('กรุณาระบุ "ชื่อ-นามสกุล" ของคุณ', true); 
-      
-      // 2. ตรวจสอบวัน/เดือน/ปีเกิด อย่างละเอียด
       const dNum = Number(birthDay);
-      if (!birthDay || isNaN(dNum) || dNum < 1 || dNum > 31) {
-          return toast('กรุณาระบุวันที่เกิดให้ถูกต้อง (1-31)', true); 
-      }
-      
+      if (!birthDay || isNaN(dNum) || dNum < 1 || dNum > 31) return toast('กรุณาระบุวันที่เกิดให้ถูกต้อง (1-31)', true); 
       const mNum = Number(birthMonth);
-      if (!birthMonth || isNaN(mNum) || mNum < 1 || mNum > 12) {
-          return toast('กรุณาระบุเดือนเกิดให้ถูกต้อง (1-12)', true); 
-      }
-      
+      if (!birthMonth || isNaN(mNum) || mNum < 1 || mNum > 12) return toast('กรุณาระบุเดือนเกิดให้ถูกต้อง (1-12)', true); 
       const yNum = Number(birthYear);
-      // คำนวณปี พ.ศ. ปัจจุบันอัตโนมัติ (ดึงจากเวลาเครื่องลูกค้า)
       const currentThaiYear = new Date().getFullYear() + 543;
-
-      if (!birthYear || birthYear.length !== 4 || isNaN(yNum)) {
-          return toast('กรุณาระบุปีเกิด (พ.ศ.) ให้ครบ 4 หลัก เช่น 2535', true);
-      }
-      // [เพิ่มใหม่]: ห้ามกรอกปีเกิดเกินปีปัจจุบัน
-      if (yNum > currentThaiYear) {
-          return toast(`ปีเกิด (พ.ศ.) ต้องไม่เกินปีปัจจุบัน (${currentThaiYear})`, true);
-      }
-      // [เพิ่มใหม่]: ป้องกันคนกรอกเลขมั่วที่น้อยเกินจริง (เช่น 1990 ซึ่งเป็น ค.ศ. ไม่ใช่ พ.ศ.)
-      if (yNum < 2450) { 
-          return toast('กรุณาระบุปีเกิดเป็น "พ.ศ." ให้ถูกต้องตามความเป็นจริง', true);
-      }
-
-      // 3. ตรวจสอบเบอร์โทร (ถ้ากรอกมา ต้องครบ 10 หลัก และขึ้นต้นด้วยเลข 0)
+      if (!birthYear || birthYear.length !== 4 || isNaN(yNum)) return toast('กรุณาระบุปีเกิด (พ.ศ.) ให้ครบ 4 หลัก เช่น 2535', true);
+      if (yNum > currentThaiYear) return toast(`ปีเกิด (พ.ศ.) ต้องไม่เกินปีปัจจุบัน (${currentThaiYear})`, true);
+      if (yNum < 2450) return toast('กรุณาระบุปีเกิดเป็น "พ.ศ." ให้ถูกต้องตามความเป็นจริง', true);
       if (phone !== '') {
-          if (phone.length !== 10 || !phone.startsWith('0')) {
-              return toast('เบอร์โทรศัพท์ต้องมี 10 หลักและขึ้นต้นด้วย 0', true);
-          }
+          if (phone.length !== 10 || !phone.startsWith('0')) return toast('เบอร์โทรศัพท์ต้องมี 10 หลักและขึ้นต้นด้วย 0', true);
       }
-
-      // 4. ตรวจสอบรูปแบบอีเมล (ถ้ากรอกมา ต้องเช็ค Regex ความถูกต้อง)
       if (emailForm !== '') {
           const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          if (!emailRegex.test(emailForm)) {
-              return toast('รูปแบบอีเมลไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง', true);
-          }
+          if (!emailRegex.test(emailForm)) return toast('รูปแบบอีเมลไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง', true);
       }
 
-      // แอบจำอีเมลลูกค้าไว้ในระบบชั่วคราว เพื่อเตรียมส่งตอนจบ
       appState.customerEmail = emailForm;
 
       const payload = { 
@@ -1451,6 +1365,10 @@
           appState.keyInfo.questionsUsed += 1; 
           updateQuotaDisplay(); 
         }
+        if (r.updatedProducts) {
+           appState.reading.suggestedProducts = r.updatedProducts;
+           renderProducts(r.updatedProducts);
+        }
         renderChat(); 
         setChatStatus('ตอบแล้ว', 'idle'); 
       }).withFailureHandler(err=>{ 
@@ -1460,33 +1378,24 @@
       }).chatWithGemini({ keyCode: appState.keyCode, question: q, reading: appState.reading, history: appState.chat }); 
     };
 
-    // ============================================================================
-    // เพิ่มระบบ Guide สำหรับบันทึกไฟล์เป็น PDF อย่างสมบูรณ์ (สระไม่ลอย, หน้าไม่ดำ)
-    // ============================================================================
     function triggerSaveAsPdf() {
-      // แนะนำให้ผู้ใช้ทราบว่าต้องเลือก "บันทึกเป็น PDF" ในหน้าต่างเครื่องพิมพ์
       getEl('alertTitle').textContent = '📥 วิธีบันทึกเป็นไฟล์ PDF';
       getEl('alertBody').innerHTML = '<div style="text-align:left; font-size:1.05rem; line-height:1.6; color:#ddd;"><p>เพื่อให้ได้หน้าตากระดาษพื้นหลังสีขาวที่สวยงาม อ่านง่าย และสระไม่ลอย:</p><ol style="padding-left: 20px; margin-bottom:0;"><li>ระบบจะเปิดหน้าต่างการพิมพ์ขึ้นมา</li><li>ให้คุณเปลี่ยนตัวเลือก <b>เครื่องพิมพ์ (Destination)</b></li><li>เลือกเป็น <b>"บันทึกเป็น PDF (Save as PDF)"</b></li><li>กดปุ่ม <b>บันทึก</b> เพื่อเก็บลงเครื่องได้เลยครับ</li></ol></div>';
       getEl('alertModal').classList.add('show');
       
       const okBtn = getEl('alertModal').querySelector('.btn');
-      const oldOnClick = okBtn.onclick; // เก็บฟังก์ชันปิด Modal เดิมไว้
+      const oldOnClick = okBtn.onclick;
       
-      // เมื่อผู้ใช้กด "รับทราบ" ให้ออกคำสั่ง Print ทันที
       okBtn.onclick = () => {
           getEl('alertModal').classList.remove('show');
-          setTimeout(() => { window.print(); }, 500); // หน่วงรอให้ Modal ปิดสนิทแล้วเปิดหน้าต่าง Print
-          
-          // คืนค่าหน้าต่าง Modal และปุ่ม กลับสู่สภาพปกติ เพื่อไม่ให้กระทบกับระบบแจ้งเตือน Error อื่นๆ
+          setTimeout(() => { window.print(); }, 500);
           setTimeout(() => { 
              okBtn.onclick = oldOnClick; 
              getEl('alertTitle').textContent = '⚠️ แจ้งเตือนจากระบบ'; 
           }, 1500);
       };
     }
-    // ============================================================================
-    // [เพิ่มใหม่]: ฟังก์ชันควบคุมการวาดและประกอบร่างวอลเปเปอร์สายมูเฉพาะบุคคล V2
-    // ============================================================================
+
     getEl('createWallpaperBtn').onclick = () => {
       if (!appState.reading) return toast('ไม่พบข้อมูลดวงชะตา กรุณารับคำทำนายก่อนครับ', true);
       
@@ -1499,12 +1408,10 @@
          const ctx = canvas.getContext('2d');
          const r = appState.reading;
 
-         // 1. กำหนดคู่สีมงคล (ดึงจากดวงจริง ถ้าไม่มีให้ใช้สีกาแล็กซีเริ่มต้น)
          let color1 = '#1c2438'; 
          let color2 = '#0a101d';
          
          if (r.luckyColors && r.luckyColors.length > 0) {
-            // แม็ปปิ้งชื่อสีภาษาไทยเป็นโค้ดสี CSS สวยๆ สำหรับปูพื้นหลังวอลเปเปอร์
             const colorMap = {
                'เขียว': '#064e3b', 'แดง': '#7f1d1d', 'เหลือง': '#78350f', 'ชมพู': '#701a75',
                'ดำ': '#0f172a', 'ม่วง': '#4c1d95', 'ส้ม': '#7c2d12', 'น้ำเงิน': '#1e3a8a',
@@ -1516,15 +1423,13 @@
             });
          }
 
-         // วาดพื้นหลังแบบไล่แสงออร่าวงกลม (Radial Gradient)
          const bgGrad = ctx.createRadialGradient(540, 960, 150, 540, 960, 1100);
          bgGrad.addColorStop(0, color1);
          bgGrad.addColorStop(0.6, color2);
-         bgGrad.addColorStop(1, '#020408'); // ขอบนอกสุดดำสนิทเพื่อความหรูหรา
+         bgGrad.addColorStop(1, '#020408');
          ctx.fillStyle = bgGrad;
          ctx.fillRect(0, 0, 1080, 1920);
 
-         // 2. วาดกลุ่มดวงดาวระยิบระยับ (Stardust Effect)
          ctx.shadowBlur = 0;
          for (let i = 0; i < 150; i++) {
             ctx.beginPath();
@@ -1533,9 +1438,8 @@
             ctx.fill();
          }
 
-         // 3. วาดวงแหวนเวทย์ศักดิ์สิทธิ์ (Sacred Geometry) ด้านหลังไพ่
          ctx.save();
-         ctx.translate(540, 880); // เลื่อนจุดศูนย์กลางไปที่ตำแหน่งกึ่งกลางหน้าจอ
+         ctx.translate(540, 880);
          
          ctx.beginPath();
          ctx.arc(0, 0, 470, 0, Math.PI * 2);
@@ -1562,7 +1466,6 @@
          }
          ctx.restore();
 
-         // 4. วาดสคริปต์สีทองคำไล่เฉดสี (Gold Gradient Text) สำหรับหัวข้อ
          const goldGrad = ctx.createLinearGradient(0, 140, 0, 240);
          goldGrad.addColorStop(0, '#FFF9C4');
          goldGrad.addColorStop(0.5, '#F4CA64');
@@ -1580,43 +1483,34 @@
          ctx.font = '500 44px Sarabun';
          ctx.fillText(`ลิขิตฟ้าประจำตัว : คุณ ${r.customerName || 'เจ้าชะตา'}`, 540, 290);
 
-         // 5. ดึงรูปไพ่ยิปซีมาวาด (ลอจิกใหม่: คัดไพ่ดี หรือใช้ไพ่แก้เคล็ด)
          const img = new Image();
          img.crossOrigin = 'Anonymous'; 
          
-         let targetCardId = 'the_sun'; // ค่าเริ่มต้น (ไพ่แก้เคล็ดครอบจักรวาล)
+         let targetCardId = 'the_sun'; 
 
          if (r.tarotResult && r.tarotResult.cards && r.tarotResult.cards.length > 0) {
-            // รายชื่อไพ่ Major Arcana ความหมายบวก ที่คู่ควรกับการนำไปตั้งเป็นวอลเปเปอร์หนุนดวง
             const goodCards = ['the_sun', 'the_world', 'the_star', 'the_empress', 'the_emperor', 'wheel_of_fortune', 'the_magician', 'the_chariot', 'strength', 'the_lovers', 'the_high_priestess'];
-
-            // สแกนหาว่าใน 3 ใบที่เปิดได้ มีไพ่ดีๆ อยู่บ้างไหม?
             let foundGoodCard = null;
             for (let i = 0; i < r.tarotResult.cards.length; i++) {
                 let id = String(r.tarotResult.cards[i].cardId || '').toLowerCase().replace(/\s+/g, '_').replace(/[^a-z_]/g, '');
                 if (goodCards.includes(id) && tarotImages[id]) {
                     foundGoodCard = id;
-                    break; // เจอใบแรกที่เป็นมงคล หยิบมาใช้เลย
+                    break;
                 }
             }
-
             if (foundGoodCard) {
-                targetCardId = foundGoodCard; // ใช้ไพ่มงคลที่ลูกค้าจับได้เอง
+                targetCardId = foundGoodCard; 
             } else {
-                // ถ้าดวงตก จับได้แต่ไพ่ร้าย (Death, Tower, ฯลฯ) หรือไพ่ชุดเล็กที่ไม่มีรูป
-                // ให้ระบบสุ่ม "ไพ่แก้เคล็ดสุดปัง" ไปให้แทน 1 ใน 3 ใบนี้
                 const remedialCards = ['the_sun', 'the_world', 'wheel_of_fortune'];
                 targetCardId = remedialCards[Math.floor(Math.random() * remedialCards.length)];
             }
          }
          
-         // นำ ID ไพ่ที่ผ่านการคัดกรองแล้ว ไปดึงลิงก์รูปภาพมาวาด
          img.src = 'https://upload.wikimedia.org/wikipedia/commons/' + tarotImages[targetCardId];
          
          img.onload = function() {
             const cX = 265, cY = 420, cW = 550, cH = 910;
 
-            // วาดเงาหลังไพ่ให้มีมิติลอยออกมาจากฉากหลัง
             ctx.shadowColor = '#f4ca64';
             ctx.shadowBlur = 80;
             ctx.fillStyle = '#000';
@@ -1625,7 +1519,6 @@
             ctx.shadowBlur = 0;
             ctx.drawImage(img, cX, cY, cW, cH);
 
-            // วาดกรอบโลหะทองคำล้อมรอบตัวไพ่
             const frameGrad = ctx.createLinearGradient(cX, cY, cX + cW, cY + cH);
             frameGrad.addColorStop(0, '#FFF9C4');
             frameGrad.addColorStop(0.5, '#B38728');
@@ -1634,13 +1527,11 @@
             ctx.lineWidth = 14;
             ctx.strokeRect(cX, cY, cW, cH);
 
-            // 6. เรนเดอร์ส่วนตัวเลขมงคล (ดึงจากดวงจริง)
             ctx.fillStyle = '#34d399';
             ctx.font = '600 48px Sarabun';
             ctx.fillText('เลขมงคลหนุนโชคลาภทรัพย์สิน', 540, 1510);
 
-            // รวมตัวเลข 3 ตัว และ 2 ตัว เข้าด้วยกันเป็นชุดมงคล
-            let numStr = '7 8 9  4 5'; // ค่าฟอลแบ็ค
+            let numStr = '7 8 9  4 5';
             if (r.lottery3Digits && r.lottery2Digits) {
                numStr = `${r.lottery3Digits.slice(0,1).join(' ')} - ${r.lottery2Digits.slice(0,2).join(' ')}`;
             }
@@ -1656,7 +1547,6 @@
             ctx.shadowBlur = 35;
             ctx.fillText(numStr, 540, 1660);
 
-            // 7. พิมพ์ลายน้ำของแบรนด์คุณ
             ctx.shadowBlur = 0;
             ctx.fillStyle = 'rgba(255,255,255,0.25)';
             ctx.font = '36px Sarabun';
@@ -1676,7 +1566,6 @@
       }
     };
 
-    // ตัวควบคุมสิทธิ์ปุ่มดาวน์โหลดไฟล์ภาพวอลเปเปอร์สุทธิ
     getEl('downloadWallpaperBtn').onclick = () => {
       const canvas = getEl('talismanCanvas');
       const link = document.createElement('a');
@@ -1686,26 +1575,17 @@
       toast('เริ่มดาวน์โหลดวอลเปเปอร์มงคลพรีเมียมแล้วครับ! 🎉');
     };
 
-    // ============================================================================
-    // [เพิ่มใหม่]: คัดลอกคำสั่งจากปุ่มวอลเปเปอร์ด้านบน มาผูกกับปุ่มด้านล่างด้วย
-    // ============================================================================
     if (getEl('createWallpaperBtnChat')) {
         getEl('createWallpaperBtnChat').onclick = getEl('createWallpaperBtn').onclick;
     }
 
-    // คำสั่งปุ่มทำงานทั้งหมด
     getEl('pdfBtn').onclick = () => { setStep(4); window.print(); };
     getEl('pdfChatBtn').onclick = () => { setStep(4); window.print(); };
     getEl('downloadPdfBtn').onclick = () => { setStep(4); triggerSaveAsPdf(); };
     getEl('downloadChatPdfBtn').onclick = () => { setStep(4); triggerSaveAsPdf(); };
 
-
     function trackAndRedirect(productId, url) { if (productId) google.script.run.trackProductClick(productId); window.open(url, '_blank'); }
 
-    // ============================================================================
-    // [แก้ไข]: เปิด Modal ส่งอีเมล พร้อมดึงอีเมลเดิมมากรอกให้อัตโนมัติ (Auto-Fill)
-    // ============================================================================
-    // เปิด Modal จากปุ่มด้านบน (ผลคำทำนาย)
     getEl('openEmailModalBtn').onclick = () => {
       if (appState.customerEmail) {
           getEl('userEmailInput').value = appState.customerEmail;
@@ -1713,7 +1593,6 @@
       getEl('emailModal').classList.add('show');
     };
 
-    // เปิด Modal จากปุ่มด้านล่าง (ส่วนแชท)
     if (getEl('openEmailModalBtnChat')) {
       getEl('openEmailModalBtnChat').onclick = () => {
         if (appState.customerEmail) {
@@ -1726,10 +1605,7 @@
     getEl('confirmSendEmailBtn').onclick = () => {
       const email = getEl('userEmailInput').value.trim();
       if (!email || !email.includes('@')) return toast('กรุณากรอกอีเมลให้ถูกต้อง', true);
-      
-      // [เพิ่มใหม่]: แอบจำอีเมลใหม่ไว้ด้วย เผื่อลูกค้าเปลี่ยนใจพิมพ์อีเมลอื่นในช่องนี้
       appState.customerEmail = email; 
-
       getEl('emailModal').classList.remove('show');
       showLoading('กำลังรวบรวมข้อมูลทั้งหมดและส่งอีเมล...');
       
@@ -1742,14 +1618,8 @@
       }).sendFullReportEmail({ keyCode: appState.keyCode, email: email });
     };
     
-    // =====================================
-    // ระบบส่งคะแนน Rating และโชว์ป๊อปอัป TikTok
-    // =====================================
     document.querySelectorAll('.star').forEach(s => {
-       s.onclick = () => {
-          const val = Number(s.dataset.value);
-          submitRating(val);
-       };
+       s.onclick = () => { submitRating(Number(s.dataset.value)); };
     });
 
     function submitRating(star) {
@@ -1758,12 +1628,8 @@
           hideLoading();
           getEl('starGroup').style.display = 'none';
           getEl('ratingThanks').style.display = 'block';
-          
-          if (star === 5) {
-             showTiktokReviewModal();
-          } else {
-             toast('บันทึกคะแนนเรียบร้อย ขอบคุณครับ!');
-          }
+          if (star === 5) { showTiktokReviewModal(); } 
+          else { toast('บันทึกคะแนนเรียบร้อย ขอบคุณครับ!'); }
        }).withFailureHandler((err) => {
           hideLoading(); toast(err.message||err, true);
        }).submitFeedback({ keyCode: appState.keyCode, rating: star });
@@ -1771,9 +1637,7 @@
 
     function showTiktokReviewModal() {
        getEl('alertTitle').innerHTML = '🎁 รับคูปองส่วนลด 10% ทันที! เมื่อซื้อ Key ต่อไป';
-       // ดึงลิงก์ LINE มาใช้ในปุ่ม เพื่อความเป็นอัตโนมัติ
        const lineBtnHref = getEl('lineContactBtn') ? getEl('lineContactBtn').href : 'https://line.me';
-       
        getEl('alertBody').innerHTML = `<div style="text-align:center;">
          <p style="font-size:4.5rem; margin:0; animation: pulse 2s infinite;">🤩</p>
          <p style="color:#34d399; font-weight:bold; font-size:1.2rem; margin-top:10px;">ดีใจที่คุณชอบคำทำนายของเราครับ!</p>
@@ -1791,20 +1655,13 @@
        getEl('alertModal').classList.add('show');
     }
 
-    // ============================================================================
-    // [แก้ไข]: ฟังก์ชันควบคุมกล้องและวิเคราะห์โหงวเฮ้ง (Index.html)
-    // เปลี่ยนไปใช้ Native HTML5 Camera ถ่ายรูปแทนการดึง Live Video Stream
-    // ============================================================================
     let capturedBase64 = null;
 
     function startCamera() {
        if (appState.faceScanUsed) return toast('สิทธิ์วิเคราะห์โหงวเฮ้งของคุณถูกใช้ไปแล้วครับ', true);
-       
-       // สั่งให้ input file ที่ซ่อนไว้ทำงาน ซึ่งจะไปปลุกแอปกล้องของมือถือขึ้นมา
        getEl('cameraInput').click();
     }
 
-    // ฟังก์ชันนี้จะทำงานอัตโนมัติเมื่อลูกค้ากด "ถ่ายรูปเสร็จ" หรือ "เลือกไฟล์เสร็จ"
     function handleCameraUpload(event) {
        const file = event.target.files[0];
        if (!file) return;
@@ -1815,28 +1672,17 @@
            img.onload = function() {
                const canvas = getEl('cameraCanvas');
                const ctx = canvas.getContext('2d');
-               
-               // ย่อขนาดภาพอัตโนมัติ ป้องกันไม่ให้ไฟล์ใหญ่เกินไปจนส่ง API ไม่ผ่าน (กว้างสูงสุด 600px)
                const MAX_WIDTH = 600;
                let width = img.width;
                let height = img.height;
-               
                if (width > MAX_WIDTH) {
                    height = Math.round((height * MAX_WIDTH) / width);
                    width = MAX_WIDTH;
                }
-               
-               canvas.width = width;
-               canvas.height = height;
+               canvas.width = width; canvas.height = height;
                ctx.drawImage(img, 0, 0, width, height);
-               
-               // แปลงรูปเป็น Base64
                capturedBase64 = canvas.toDataURL('image/jpeg', 0.8);
-               
-               // นำรูปไปแสดงบนกรอบพรีวิว
                getEl('cameraPreview').src = capturedBase64;
-               
-               // สลับหน้าจอให้เห็นรูปที่ถ่ายและปุ่มยืนยัน
                getEl('cameraSetupBox').classList.add('hide');
                getEl('cameraActiveBox').classList.remove('hide');
            }
@@ -1846,7 +1692,6 @@
     }
 
     function stopCamera() {
-       // ล้างค่ารูปเดิมทิ้งและกลับไปหน้ากดปุ่มถ่ายรูปใหม่
        capturedBase64 = null;
        getEl('cameraInput').value = '';
        getEl('cameraActiveBox').classList.add('hide');
@@ -1855,15 +1700,10 @@
 
     function captureAndAnalyzeFace() {
        if (!capturedBase64) return toast('กรุณาถ่ายภาพก่อนครับ', true);
-
-       // 1. สลับหน้าจอจากกล่องยืนยันรูป ไปยังกล่อง "กำลังสแกนแบบไฮเทค"
        getEl('cameraActiveBox').classList.add('hide');
        getEl('faceScanningBox').classList.remove('hide');
-       
-       // โหลดรูปที่ถ่ายลงไปใต้เอฟเฟกต์เลเซอร์
        getEl('scanningImage').src = capturedBase64;
        
-       // 2. จำลองข้อความให้ดูเหมือน AI กำลังสแกนส่วนต่างๆ ทีละขั้นตอน
        const thaiStatusText = getEl('scanStatusThai');
        const hudText = getEl('hudProgressText');
        let step = 0;
@@ -1876,77 +1716,50 @@
            else if (step === 4) { thaiStatusText.textContent = "ผสานข้อมูลเข้ากับพื้นดวงชะตาหลัก..."; hudText.textContent = "SYNCHRONIZING: HOROSCOPE CORE DATA"; step = 0; }
        }, 2500);
 
-       // 3. ส่งข้อมูลให้ Google Apps Script ไปยัง Gemini
        google.script.run.withSuccessHandler((res) => {
            clearInterval(simInterval);
            toast('วิเคราะห์โหงวเฮ้งสำเร็จ!');
            appState.faceScanUsed = true;
-           
            appState.reading.faceScanResult = res;
            getEl('faceScanningBox').classList.add('hide');
            renderReading(appState.reading); 
-           
        }).withFailureHandler((err) => {
            clearInterval(simInterval);
            getEl('faceScanningBox').classList.add('hide');
-           getEl('cameraSetupBox').classList.remove('hide'); // ถอยกลับไปหน้าปุ่มเริ่ม
+           getEl('cameraSetupBox').classList.remove('hide'); 
            
-           // [แก้ไข]: สกัดคำว่า Error/Exception ของ Google ออก และบังคับให้ Modal เด้งโชว์ตรงกลางหน้าจอ
            let errMsg = err.message || err;
            errMsg = errMsg.replace(/^Error:\s*/i, '').replace(/^Exception:\s*/i, '');
-           
            getEl('alertTitle').innerHTML = '⚠️ แจ้งเตือนการสแกนใบหน้า';
            getEl('alertBody').innerHTML = errMsg;
            getEl('alertModal').classList.add('show');
-           
-       }).processFaceScan({
-           keyCode: appState.keyCode,
-           customerName: appState.reading.customerName || 'Customer',
-           reading: appState.reading,
-           imageBase64: capturedBase64
-       });
+       }).processFaceScan({ keyCode: appState.keyCode, customerName: appState.reading.customerName || 'Customer', reading: appState.reading, imageBase64: capturedBase64 });
     }
 
-    // ============================================================================
-    // [เพิ่มใหม่]: ระบบตรวจสอบการไม่ใช้งาน (Idle Timeout)
-    // ทำงานที่ไฟล์: Index.html (นำไปวางไว้ท้ายสุดของส่วน Script)
-    // ============================================================================
     let idleSeconds = 0;
-    const IDLE_LIMIT_SECONDS = 180; // ตั้งค่าเวลาที่ยอมให้ปล่อยเครื่องทิ้งไว้ (เช่น 180 วินาที = 3 นาที)
+    const IDLE_LIMIT_SECONDS = 180; 
 
-    // ฟังก์ชันสำหรับรีเซ็ตตัวจับเวลาเมื่อมีการขยับหรือแตะหน้าจอ
-    function resetIdleTimer() {
-        idleSeconds = 0;
-    }
+    function resetIdleTimer() { idleSeconds = 0; }
 
-    // ดักจับเหตุการณ์ (Events) ทุกประเภทที่บ่งบอกว่าลูกค้ากำลังใช้งานเครื่องอยู่
     window.addEventListener('mousemove', resetIdleTimer);
     window.addEventListener('keydown', resetIdleTimer);
     window.addEventListener('scroll', resetIdleTimer, true);
     window.addEventListener('touchstart', resetIdleTimer);
     window.addEventListener('click', resetIdleTimer);
 
-    // หุ่นยนต์ตรวจจับทุกๆ 1 วินาที
     setInterval(() => {
-        // เงื่อนไข: ทำงานเฉพาะตอนที่ล็อกอินแล้ว + มีเวลาเหลือ + ไม่ใช่หน้าดูประวัติย้อนหลัง (isReadOnly)
         if (appState.loggedIn && appState.keyCode && appState.keyInfo && !appState.keyInfo.isReadOnly) {
             idleSeconds++;
-            
             if (idleSeconds >= IDLE_LIMIT_SECONDS) {
-                // เมื่อเวลาเกินกำหนด ให้เตะออกจากระบบทันที
-                idleSeconds = 0; // รีเซ็ตเพื่อป้องกันการลูปซ้ำ
+                idleSeconds = 0; 
                 toast("ไม่มีการใช้งานหน้าจอเกินกำหนด ระบบกำลังนำท่านออกเพื่อรักษาโควตาเวลา...", true, true);
-                triggerLogoutAction(); // เรียกใช้ฟังชั่นออกจากระบบของคุณที่ทำเรื่อง Save Session ไว้สมบูรณ์แล้ว
+                triggerLogoutAction(); 
             }
         }
     }, 1000);
 
-    
-    // ============================================================================
-    // [เพิ่มใหม่]: ระบบพลุเฉลิมฉลอง (Confetti Effect)
-    // ============================================================================
     function fireConfetti() {
-        var duration = 3000; // จุดพลุนาน 3 วินาที
+        var duration = 3000; 
         var end = Date.now() + duration;
         (function frame() {
             confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#f4ca64', '#10b981', '#ffffff'] });
