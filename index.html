@@ -493,7 +493,7 @@
         <button class="btn" id="sendChatBtn">ส่งคำถาม</button>
       </div>
     </div> <div id="productsView" class="hide card section" style="margin-top:16px">
-      <h2 class="h2">วัตถุมงคลแนะนำ (หนุนดวงชะตานี้โดยเฉพาะ)</h2>
+      <h2 class="h2">วัตถุมงคลแนะนำ (หนุนดวงชะตานี้โดยเฉพาะ 5 รายการ)</h2>
       <div id="productsBlock" class="cards"></div>
     </div>
 
@@ -514,7 +514,7 @@
       <button class="btn2" style="color: #f87171; border-color: #f87171; width: 100%; max-width: 400px; padding: 14px;" onclick="triggerLogoutAction()">🚪 ออกจากระบบปลอดภัย</button>
     </div>
   </div> <script>
-      // ============================================================================
+    // ============================================================================
     // เพิ่มใหม่: Proxy จำลองคำสั่ง google.script.run ให้ทำงานข้ามโดเมนได้ (สำหรับ GitHub Pages)
     // ============================================================================
      // ============================================================================
@@ -932,6 +932,10 @@
     }
 
     function renderReading(r){
+      // [เพิ่มใหม่]: บังคับให้ระบบจดจำอีเมลเก่าจากฐานข้อมูล ป้องกันอีเมลหลุดหายเวลารีเฟรชหน้าจอ
+      if (r.customerEmail) {
+         appState.customerEmail = r.customerEmail;
+      }
       appState.reading = r; setStep(2); 
       getEl('resultTitle').textContent = 'ดวงชะตาของ ' + (r.customerName || 'คุณ');
       
@@ -1603,20 +1607,25 @@
 
     function trackAndRedirect(productId, url) { if (productId) google.script.run.trackProductClick(productId); window.open(url, '_blank'); }
 
-    getEl('openEmailModalBtn').onclick = () => {
-      if (appState.customerEmail) {
-          getEl('userEmailInput').value = appState.customerEmail;
+    // ============================================================================
+    // [แก้ไขใหม่]: ระบบยืนยันอีเมล (ดึงอีเมลเก่ามาเติมอัตโนมัติ แต่ยังคงเปิด Pop-up เพื่อให้ตรวจสอบหรือแก้ไข)
+    // ============================================================================
+    const handleSmartEmailSending = () => {
+      // 1. ตรวจสอบว่าเคยกรอกอีเมลไว้ไหม ถ้ามีให้นำมาใส่ในช่องอินพุตล่วงหน้า (Auto-fill) เผื่อลูกค้าใช้เมลเดิม
+      if (appState.customerEmail && appState.customerEmail.includes('@')) {
+         getEl('userEmailInput').value = appState.customerEmail;
+      } else {
+         getEl('userEmailInput').value = ''; // ถ้าไม่มีประวัติให้ปล่อยว่างไว้
       }
+      
+      // 2. บังคับเปิดหน้าต่าง Pop-up ขึ้นมาเสมอ เพื่อให้ลูกค้าได้กดยืนยันความถูกต้อง หรือพิมพ์เปลี่ยนอีเมลใหม่ได้ตามต้องการ
       getEl('emailModal').classList.add('show');
     };
 
+    // ผูกคำสั่งเข้ากับปุ่มส่งอีเมลทั้งจุดบน (หน้าผลทำนาย) และจุดล่าง (หน้าต่างแชท)
+    getEl('openEmailModalBtn').onclick = handleSmartEmailSending;
     if (getEl('openEmailModalBtnChat')) {
-      getEl('openEmailModalBtnChat').onclick = () => {
-        if (appState.customerEmail) {
-            getEl('userEmailInput').value = appState.customerEmail;
-        }
-        getEl('emailModal').classList.add('show');
-      };
+        getEl('openEmailModalBtnChat').onclick = handleSmartEmailSending;
     }
 
     getEl('confirmSendEmailBtn').onclick = () => {
