@@ -111,6 +111,16 @@
       .wrap { padding: 16px 12px 48px; } .hero { padding: 20px 16px; } .section { padding: 16px; }
       .info-bar { flex-direction: column; align-items: stretch; text-align: center; } .info-bar button { width: 100%; margin-top: 8px; }
       .result-top { flex-direction: column; gap: 12px; align-items: stretch; } .result-top div { display: flex; flex-direction: column; gap: 8px; } .result-top button { width: 100%; } .composer button { width: 100%; }
+      
+      /* [เพิ่มใหม่]: บังคับให้ตะกร้าสินค้าเรียงลงมาเป็นแนวตั้งเมื่อเปิดบนมือถือ */
+      .cards { 
+        flex-direction: column; 
+        overflow-x: hidden; 
+      }
+      .product { 
+        width: 100%; 
+        flex: 1 1 auto; 
+      }
     }
 
     @media print {
@@ -503,10 +513,8 @@
     <div id="bottomLogoutContainer" class="hide" style="margin-top: 20px; text-align: center;">
       <button class="btn2" style="color: #f87171; border-color: #f87171; width: 100%; max-width: 400px; padding: 14px;" onclick="triggerLogoutAction()">🚪 ออกจากระบบปลอดภัย</button>
     </div>
-  </div> 
-  
-  <script>
-    // ============================================================================
+  </div> <script>
+      // ============================================================================
     // เพิ่มใหม่: Proxy จำลองคำสั่ง google.script.run ให้ทำงานข้ามโดเมนได้ (สำหรับ GitHub Pages)
     // ============================================================================
      // ============================================================================
@@ -575,10 +583,19 @@
     
     // โค้ดเดิมของคุณทั้งหมดจะอยู่ต่อจากบรรทัดนี้...
 
-    const uniqueClientId = 'SSID-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
-    let appState = { loggedIn: false, keyCode: '', reading: null, chat: [], keyInfo: null, seamsiUsed: false, tarotUsed: false };
-    let lastPayloadStr = ""; let countdownInterval = null; let autoSaveInterval = null; 
-    let templeSearchCount = 0; 
+    
+    // [แก้ไข]: เปลี่ยนมาใช้ localStorage เพื่อจำเครื่องลูกค้า รีเฟรชแล้วเข้าได้ทันที ไม่ติดล็อก 3 ครั้ง
+        let uniqueClientId = localStorage.getItem('horo_client_id');
+        if (!uniqueClientId) {
+          uniqueClientId = 'SSID-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+          localStorage.setItem('horo_client_id', uniqueClientId);
+        }
+
+        let appState = { loggedIn: false, keyCode: '', reading: null, chat: [], keyInfo: null, seamsiUsed: false, tarotUsed: false };
+        let lastPayloadStr = ""; 
+        let countdownInterval = null; 
+        let autoSaveInterval = null; 
+        let templeSearchCount = 0;
 
     const templeImages = [
       'https://images.unsplash.com/photo-1598970434795-0c54fd7c0d2d?q=80&w=500&auto=format&fit=crop',
