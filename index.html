@@ -534,11 +534,7 @@
   </div> 
 
   <script>
-    // ============================================================================
-    // เพิ่มใหม่: Proxy จำลองคำสั่ง google.script.run ให้ทำงานข้ามโดเมนได้ (สำหรับ GitHub Pages)
-    // ============================================================================
-     // ============================================================================
-    // แก้ไขใหม่ล่าสุด: Proxy จำลองคำสั่ง google.script.run แบบแยก Instance (ป้องกัน Callback ตีกัน)
+     // แก้ไขใหม่ล่าสุด: Proxy จำลองคำสั่ง google.script.run แบบแยก Instance (ป้องกัน Callback ตีกัน)
     // ============================================================================
     const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycby6ZxavqvlTF9Bl2nv6DBx_c67V186qPfQuzYUp79e5c3293Gfsc6EuOr5sm7x4NZed0w/exec";
 
@@ -600,10 +596,7 @@
       });
     }
     
-    
-    // โค้ดเดิมของคุณทั้งหมดจะอยู่ต่อจากบรรทัดนี้...
 
-    
     let uniqueClientId = localStorage.getItem('horo_client_id');
     if (!uniqueClientId) {
       uniqueClientId = 'SSID-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
