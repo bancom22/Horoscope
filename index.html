@@ -601,6 +601,7 @@
     }
     
 
+    
     let uniqueClientId = localStorage.getItem('horo_client_id');
     if (!uniqueClientId) {
       uniqueClientId = 'SSID-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
@@ -636,24 +637,80 @@
     const getEl = (id) => document.getElementById(id);
     
     // ============================================================================
-    // [เพิ่มใหม่]: ฟังก์ชันคำนวณโค้ด PromptPay QR (ทำงานในเครื่อง ไม่พึ่งเว็บภายนอก)
+    // สร้าง PromptPay EMV payload ตามราคาจาก Admin (ไม่พึ่ง promptpay.io ที่มักค้างยอดเดิม)
     // ============================================================================
     function generatePromptPayPayload(acc, amount) {
-        let accClean = String(acc).replace(/[^0-9]/g, '');
-        // เช็คว่าเป็นเบอร์โทร (10 หลัก) หรือ บัตรประชาชน/เลขนิติบุคคล (13-15 หลัก)
-        let target = accClean.length === 10 ? '01130066' + accClean.substring(1) : '0213' + accClean; 
-        let amountStr = Number(amount).toFixed(2);
-        let payload = `00020101021129370016A000000677010111${target}5802TH530376454${String(amountStr.length).padStart(2, '0')}${amountStr}6304`;
-        
-        // คำนวณรหัสตรวจสอบความถูกต้อง (CRC16)
+        let accClean = String(acc || '').replace(/[^0-9]/g, '');
+        if (!accClean) return '';
+
+        // 01=เบอร์โทร, 02=บัตรประชาชน/นิติบุคคล, 03=e-Wallet
+        let target;
+        if (accClean.length >= 15) {
+          target = '03' + String(accClean.length).padStart(2, '0') + accClean;
+        } else if (accClean.length >= 13) {
+          target = '0213' + accClean;
+        } else {
+          // เบอร์ 10 หลัก (หรือถูก Sheets ตัด 0 เหลือ 9) → รูปแบบ 0066xxxxxxxxx
+          if (accClean.length === 9) accClean = '0' + accClean;
+          const phone = accClean.length === 10 ? accClean.substring(1) : accClean;
+          const phoneValue = ('0066' + phone).slice(0, 13);
+          target = '01' + String(phoneValue.length).padStart(2, '0') + phoneValue;
+        }
+
+        const merchantInfo = '0016A000000677010111' + target;
+        const amountNum = Number(amount);
+        const amountStr = (Number.isFinite(amountNum) && amountNum > 0) ? amountNum.toFixed(2) : '';
+        // ใช้ POI 11 + tag 54 (ยอดเงิน) — รองรับแอปธนาคารไทยกว้างกว่าโหมด 12
+        let payload = '000201010211';
+        payload += '29' + String(merchantInfo.length).padStart(2, '0') + merchantInfo;
+        payload += '5802TH5303764';
+        if (amountStr) payload += '54' + String(amountStr.length).padStart(2, '0') + amountStr;
+        payload += '6304';
+
+        // CRC16-CCITT (ต้อง mask 16-bit ทุกรอบ ไม่งั้น QR เพี้ยนเมื่อเปลี่ยนยอด)
         let crc = 0xFFFF;
         for (let i = 0; i < payload.length; i++) {
             crc ^= payload.charCodeAt(i) << 8;
             for (let j = 0; j < 8; j++) {
-                crc = (crc & 0x8000) ? (crc << 1) ^ 0x1021 : crc << 1;
+                crc = (crc & 0x8000) ? (crc << 1) ^ 0x1021 : (crc << 1);
+                crc &= 0xFFFF;
             }
         }
-        return payload + (crc & 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
+        return payload + crc.toString(16).toUpperCase().padStart(4, '0');
+    }
+
+    function renderPromptPayQr(acc, amount) {
+        const qrImgEl = document.getElementById('promptpayQrImg');
+        const qrLoadingText = document.getElementById('qrLoadingText');
+        if (!qrImgEl) return;
+
+        const payload = generatePromptPayPayload(acc, amount);
+        if (!payload) {
+            qrImgEl.style.display = 'none';
+            if (qrLoadingText) {
+                qrLoadingText.style.display = 'block';
+                qrLoadingText.innerText = 'ไม่พบเลขพร้อมเพย์';
+            }
+            return;
+        }
+
+        // สร้างรูปจาก payload จริง (ยอดเงินฝังใน QR ตาม SLIP_PRICE)
+        const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&ecc=M&margin=8&data=' + encodeURIComponent(payload);
+        qrImgEl.onload = function () {
+            qrImgEl.style.display = 'block';
+            if (qrLoadingText) qrLoadingText.style.display = 'none';
+        };
+        qrImgEl.onerror = function () {
+            // fallback: promptpay.io ถ้า qrserver ล่ม
+            const priceNum = Number(amount);
+            const pricePath = (Number.isFinite(priceNum) && priceNum > 0) ? String(priceNum) : '';
+            qrImgEl.src = pricePath
+              ? ('https://promptpay.io/' + acc + '/' + pricePath + '.png')
+              : ('https://promptpay.io/' + acc + '.png');
+            qrImgEl.style.display = 'block';
+            if (qrLoadingText) qrLoadingText.style.display = 'none';
+        };
+        qrImgEl.src = qrUrl;
     }
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -707,33 +764,23 @@
                  appState.isFaceScanEnabled = true;
              }
              
-             // --- จัดการแสดงราคาและ QR Code (อัปเดตใช้ Promptpay.io) ---
-             const price = settings.SLIP_PRICE || '69'; 
-             let acc = settings.PAYMENT_ACCOUNT || '3410320318'; 
+             // --- แสดงราคา + QR ตาม SLIP_PRICE จาก Admin ---
+             const price = Number(settings.SLIP_PRICE);
+             const priceText = (Number.isFinite(price) && price > 0) ? String(price) : '69';
+             let acc = String(settings.PAYMENT_ACCOUNT || '3410320318').trim().replace(/[^0-9]/g, '');
              
-             // [เพิ่มโค้ด 4 บรรทัดนี้]: ดักจับและเติมเลข 0 กลับเข้าไปถ้าโดนฐานข้อมูลตัดทิ้ง
-             acc = String(acc).trim();
+             // ดักจับเลข 0 นำหน้าที่ Sheets ตัดทิ้ง (เบอร์โทร)
              if (acc.length === 9 && !acc.startsWith('0')) {
                  acc = '0' + acc;
              }
              
              const uiPriceEl = document.getElementById('uiSlipPrice');
-             if (uiPriceEl) uiPriceEl.innerText = price;
+             if (uiPriceEl) uiPriceEl.innerText = priceText;
              
              const uiAccEl = document.getElementById('uiPaymentAcc');
-             if (uiAccEl) uiAccEl.innerText = acc; // ตัวเลขที่ลูกค้ากดคัดลอกจะกลับมามี 0 นำหน้า
+             if (uiAccEl) uiAccEl.innerText = acc;
              
-             // ใช้ API ของ Promptpay.io สร้างรูป
-             const qrUrl = `https://promptpay.io/${acc}/${price}.png`;
-             const qrImgEl = document.getElementById('promptpayQrImg');
-             const qrLoadingText = document.getElementById('qrLoadingText');
-             
-             if (qrImgEl) {
-                 qrImgEl.src = qrUrl;
-                 // เมื่อดึงข้อมูลเสร็จ ให้ซ่อนตัวอักษรโหลด และโชว์รูป QR ขึ้นมาแทน
-                 qrImgEl.style.display = 'block'; 
-                 if(qrLoadingText) qrLoadingText.style.display = 'none';
-             }
+             renderPromptPayQr(acc, priceText);
          }
       }).getPublicSettings();
     });
